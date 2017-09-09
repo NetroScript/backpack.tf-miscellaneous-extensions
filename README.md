@@ -1,5 +1,5 @@
 # backpack.tf - Miscellaneous Extensions
-This is an userscript to add miscellaneous functionality to the page (which I would have liked for myself).
+This is an userscript to add miscellaneous functionality to backpack.tf (which I would have liked for myself).
 Currently included is:
 * In inventories add a Sort by paint
 
@@ -11,6 +11,17 @@ and then install using this link: [backpack.tf extended sorting.user.js](https:/
 (Or paste / install it manually for your plugin)
 
 ## Changelog
+
+
+#### 0.1.1
+
+Fixed:
+*Generalized Sorting functions
+*removed emtpy item containers which were used for spacing the normal inventory pages
+
+Added:
+*sorting the single pages (f.e. sorting Paints by price)
+*meta data to automatically update the script
 
 ### 0.1
 
