@@ -28,8 +28,17 @@ Added:
 *Released with additional sort by paint
 
 
+##Planned features
+*Sort by level
+*Sort by Spell
+*Sort by Effect
+*Sort by Lowcraft
+*Sort by Killstreak
+*Sort by Tier (and wear secondary)
+*Sort by discout
+
 
 
 ## Preview
 
-![Preview](https://raw.githubusercontent.com/NetroScript/backpack.tf-miscellaneous-extensions/master/preview.png)
+![Preview](https://raw.githubusercontent.com/NetroScript/backpack.tf-miscellaneous-extensions/master/preview1.png)
