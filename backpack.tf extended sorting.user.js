@@ -739,6 +739,10 @@ Usage:
       "cc": ["#e5e5e5"],
       "refprice": 31
     }, // Weapon changing
+    "Halloween Spell: Pumpkin Bombs": { //this is not the official spell name but it seems the single spell names get merged into it
+      "cc": ["#68167d"],
+      "refprice": 37
+    },
     "Halloween Spell: Exorcism": {
       "cc": [
         "#B8383B", "#5885A2"

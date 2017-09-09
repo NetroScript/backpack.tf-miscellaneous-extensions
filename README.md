@@ -55,5 +55,5 @@ _____________________________________________
 Paint sorting:
 ![Preview](https://raw.githubusercontent.com/NetroScript/backpack.tf-miscellaneous-extensions/master/preview1.png)
 
-Spell sorting:
+Spell sorting (green dots mean a single spell, red dots mean multi spell):
 ![Preview](https://raw.githubusercontent.com/NetroScript/backpack.tf-miscellaneous-extensions/master/preview2.png)
