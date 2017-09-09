@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         backpack.tf - Miscellaneous Extensions
-// @description  Adds more options for sorting items in backpacks (currently Sorting for paints)
-// @version      0.1.1
+// @description  Adds more options for sorting items in backpacks (currently Sorting for paints, spells)
+// @version      0.1.2
 // @author       Netroscript
 // @namespace    https://github.com/NetroScript
 // @include      /^https?:\/\/backpack\.tf\/(?:id|profiles)\/.*/
@@ -638,6 +638,131 @@ Usage:
     }
   };
 
+  var spells = { //Footprints
+    "Halloween Spell: Team Spirit Footprints": {
+      "cc": [
+        "#B8383B", "#5885A2"
+      ],
+      "refprice": 50
+    },
+    "Halloween Spell: Gangreen Footprints": {
+      "cc": ["#79c46b"],
+      "refprice": 49
+    },
+    "Halloween Spell: Corpse Gray Footprints": {
+      "cc": ["#8e9f9d"],
+      "refprice": 48
+    },
+    "Halloween Spell: Violent Violet Footprints": {
+      "cc": ["#f7b4fe"],
+      "refprice": 47
+    },
+    "Halloween Spell: Rotten Orange Footprints": {
+      "cc": ["#CF7336"],
+      "refprice": 46
+    },
+    "Halloween Spell: Bruised Purple Footprints": {
+      "cc": ["#7D4071"],
+      "refprice": 45
+    },
+    "Halloween Spell: Headless Horseshoes": {
+      "cc": ["#ba76ff"],
+      "refprice": 44
+    }, //Paint changing
+    "Halloween Spell: Die Job": {
+      "cc": [
+        "#E7B53B", "#8586ff"
+      ],
+      "refprice": 43
+    },
+    "Halloween Spell: Spectral Spectrum": {
+      "cc": [
+        "#B8383B", "#5885A2"
+      ],
+      "refprice": 42
+    },
+    "Halloween Spell: Putrescent Pigmentation": {
+      "cc": [
+        "#79c46b", "#67B037"
+      ],
+      "refprice": 41
+    },
+    "Halloween Spell: Sinister Staining": {
+      "cc": [
+        "#F2EF46", "#808000"
+      ],
+      "refprice": 40
+    },
+    "Halloween Spell: Chromatic Corruption": {
+      "cc": [
+        "#DB42BD", "#7D4071"
+      ],
+      "refprice": 39
+    }, //Voice Changing
+    "Halloween Spell: Voices From Below": { //this is not the official spell name but it seems the single spell names get merged into it
+      "cc": ["#D11959"],
+      "refprice": 37
+    },
+    "Halloween Spell: Scout's Spectral Snarl": {
+      "cc": ["#acfd9e"],
+      "refprice": 37
+    },
+    "Halloween Spell: Soldier's Booming Bark": {
+      "cc": ["#f48280"],
+      "refprice": 37
+    },
+    "Halloween Spell: Pyro's Muffled Moan": {
+      "cc": ["#f8bbfe"],
+      "refprice": 37
+    },
+    "Halloween Spell: Demoman's Cadaverous Croak": {
+      "cc": ["#90fdfd"],
+      "refprice": 36
+    },
+    "Halloween Spell: Heavy's Bottomless Bass": {
+      "cc": ["#f57eff"],
+      "refprice": 35
+    },
+    "Halloween Spell: Engineers's Gravelly Growl": {
+      "cc": ["#fcfd95"],
+      "refprice": 34
+    },
+    "Halloween Spell: Medic's Blood-curdling Bellow": {
+      "cc": ["#f7b786"],
+      "refprice": 33
+    },
+    "Halloween Spell: Sniper's Deep Downunder Drawl": {
+      "cc": ["#7c7cff"],
+      "refprice": 32
+    },
+    "Halloween Spell: Spy's Creepy Croon": {
+      "cc": ["#e5e5e5"],
+      "refprice": 31
+    }, // Weapon changing
+    "Halloween Spell: Exorcism": {
+      "cc": [
+        "#B8383B", "#5885A2"
+      ],
+      "refprice": 38
+    },
+    "Halloween Spell: Squash Rockets": {
+      "cc": ["#dc93ff"],
+      "refprice": 38
+    },
+    "Halloween Spell: Spectral Flame": {
+      "cc": ["#5faf53"],
+      "refprice": 38
+    },
+    "Halloween Spell: Sentry Quad-Pumpkins": {
+      "cc": ["#8b8ce9"],
+      "refprice": 38
+    },
+    "Halloween Spell: Gourd Grenades": {
+      "cc": ["#f8bb8c"],
+      "refprice": 38
+    }
+  };
+
   let pagetemplate = `<div class="backpack-page">
     <div class="page-number">
         <div class="page-anchor" id="page{pagenum}">
@@ -650,7 +775,10 @@ Usage:
 </div>`;
 
   var newSorts = [
-    ["Sort by paint", "paint", sortByPaint]
+    [
+      "Sort by paint", "paint", sortByPaint
+    ],
+    ["Sort by spell", "spell", sortBySpell]
   ];
 
   function sortByPaint() {
@@ -686,6 +814,39 @@ Usage:
 
   }
 
+  function sortBySpell() {
+    let s = spells;
+    s["No Spell"] = {
+      "cc": ["#676780"],
+      "price": "No Spell Price",
+      "refprice": 0
+    };
+
+    for (let k in s) {
+      s[k]["items"] = [];
+
+    }
+
+    let z = $('.item:not(.spacer)');
+
+    for (let p = 0; p < z.length; p++) {
+      if (s.hasOwnProperty($(z[p]).attr("data-spell_1"))) {
+        s[$(z[p]).attr("data-spell_1")]["items"].push($(z[p])[0]);
+      } else {
+        s["No Spell"]["items"].push($(z[p])[0]);
+      }
+
+    }
+
+    for (let k in s) {
+      s[k]["items"] = genericItemSort("data-price", s[k]["items"]);
+
+    }
+
+    genericSort(s, "s", true);
+
+  }
+
   var lasttype = "";
 
   var sortType = "";
@@ -716,7 +877,7 @@ Usage:
     return array;
   }
 
-  function genericSort(o, type) {
+  function genericSort(o, type, hide = false) {
 
     $(".item:not(.spacer)").detach();
     $("#backpack").empty();
@@ -724,7 +885,8 @@ Usage:
     let a = [];
     for (let k in o) {
 
-      a.push([k, o[k]["cc"], o[k]["refprice"], o[k]["items"]]);
+      a.push([k, o[k]["cc"], o[k]["refprice"], o[k]["items"]
+      ]);
 
     }
 
@@ -735,20 +897,23 @@ Usage:
       lasttype = type;
 
     for (let i = 0; i < a.length; i++) {
+      if (!hide || a[i][3].length != 0) {
 
-      let textcolor = "color: " + idealTextColor(a[i][1][0]) + ";";
-      let bgcolor = (a[i][1].length == 1)
-        ? "background-color: " + a[i][1][0] + ";"
-        : "background: linear-gradient( " + a[i][1][0] + " 0%, " + a[i][1][0] + " 50%, " + a[i][1][1] + " 50%," + a[i][1][1] + " 100% );";
+        let textcolor = "color: " + idealTextColor(a[i][1][0]) + ";";
+        let bgcolor = (a[i][1].length == 1)
+          ? "background-color: " + a[i][1][0] + ";"
+          : "background: linear-gradient( " + a[i][1][0] + " 0%, " + a[i][1][0] + " 50%, " + a[i][1][1] + " 50%," + a[i][1][1] + " 100% );";
 
-      $("#backpack").append(pagetemplate.fmt({
-        pagenum: i,
-        pagestyle: textcolor + bgcolor,
-        pagename: a[i][0]
-      }));
+        $("#backpack").append(pagetemplate.fmt({
+          pagenum: i,
+          pagestyle: textcolor + bgcolor,
+          pagename: a[i][0]
+        }));
 
-      for (let r = 0; r < a[i][3].length; r++) {
-        $("#page" + i).parent().parent().find(".item-list").append(a[i][3][r]);
+        for (let r = 0; r < a[i][3].length; r++) {
+          $("#page" + i).parent().parent().find(".item-list").append(a[i][3][r]);
+        }
+
       }
 
     }
@@ -771,5 +936,12 @@ Usage:
     });
 
   }
+
+  function markSpells() {
+    $("[data-spell_1]").attr("style", "border-bottom: 6px dotted #10ff00!important");
+    $("[data-spell_2]").attr("style", "border-bottom: 6px dotted #ff2121!important");
+  }
+
+  markSpells();
 
 })();
