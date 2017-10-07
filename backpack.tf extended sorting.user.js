@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         backpack.tf - Miscellaneous Extensions
-// @description  Adds more options for sorting items in backpacks (currently Sorting for paints, spells)
-// @version      0.1.2
+// @description  Adds more options for sorting items in backpacks (currently Sorting for paints, spells, levels)
+// @version      0.1.3
 // @author       Netroscript
 // @namespace    https://github.com/NetroScript
 // @include      /^https?:\/\/backpack\.tf\/(?:id|profiles)\/.*/
@@ -85,13 +85,84 @@ colors[c].refprice = parseFloat(refval.join("."))
 }
 
 
-
-
-
 	*/
 
+  //################################## Changes to Filtering ######################
+
+  //Declaring Variables so they are accessible outside the scope
+  let filteri,
+    sIc,
+    filtersearchval,
+    filtertimeout;
+
+  {
+    //Wait until the input is generated
+    sIc = setInterval(function() {
+      let e = $(".form-control[placeholder='Search...']");
+
+      if (e.length == 1) {
+        e = e[0];
+        //Remove the old events
+        let c = e.cloneNode();
+        while (e.firstChild) {
+          c.appendChild(e.lastChild);
+        }
+        e.parentNode.replaceChild(c, e);
+
+        //Add an attribute with information for filtering to every item
+        let aitems = $("#backpack .item:not('.spacer')");
+        let aitemsl = aitems.length;
+        for (let i = 0; i < aitemsl; i++) {
+          let d = $(aitems[i]);
+          let info = (d.children().last().text() + " " + d.attr("data-spell_1") + " " + d.attr("data-spell_2") + " " + d.attr("data-custom_name") + " " + d.attr("data-part_name_3") + " " + d.attr("data-part_name_2") + " " + d.attr("data-part_name_1")).toLowerCase().replace(/ undefined/g, "");
+          d.attr("data-filterinfo", info)
+        }
+
+        //Bind new events
+        $(".form-control[placeholder='Search...']").on("keyup paste", function() {
+          console.log("test")
+          clearTimeout(filtertimeout);
+          filtertimeout = setTimeout(function() {
+            filteri();
+          }, 200)
+
+        })
+
+        clearInterval(sIc);
+      }
+
+    }, 150)
+
+    //New Filter function
+    filteri = function() {
+      filtersearchval = $(".form-control[placeholder='Search...']").val().toLowerCase();
+
+      if(filtersearchval === "") return;
+
+      $(".backpack-page").show();
+      let sitems = $("#backpack .item");
+      sitems.show();
+      sitems.filter(function() {
+        if (!this.dataset.hasOwnProperty("filterinfo"))
+          return true;
+        if (!(this.dataset.filterinfo.indexOf(filtersearchval) !== -1))
+          return true;
+        return false;
+      }).hide();
+
+      //Hide empty backpack pages
+      $(".backpack-page:has(li:visible)").addClass("dhide");
+      $(".backpack-page").hide();
+      $(".dhide").show().removeClass("dhide");
+
+    };
+  }
+  //##############################################################################
+
   //###############Source: https://gist.github.com/juliarose/4ed4b5bfa606b53c00ed876ad3400e02/a427834d12ba85fc5391a0a9a5bb135b0f5ce039/
-  /*
+  let Price;
+  {
+    /*
 
 For use on backpack.tf inventory pages only.
 
@@ -203,207 +274,234 @@ Usage:
 
 */
 
-  // p1 and p2 are optional
-  var Price = function(o, p1, p2) {
-    var self = this;
+    // p1 and p2 are optional
+    Price = function(o, p1, p2) {
+      var self = this;
 
-    switch (typeof o) {
-      case 'string':
-        this.parseString(o);
-        break;
-      case 'object':
-        if (o instanceof jQuery) {
-          this.parseJQuery(o, p1, p2);
+      switch (typeof o) {
+        case 'string':
+          this.parseString(o);
+          break;
+        case 'object':
+          if (o instanceof jQuery) {
+            this.parseJQuery(o, p1, p2);
+          } else {
+            // basic price object
+            // { value: 1, value_high: 2, currency: 'metal' }
+            for (var k, i = 0; i < Price.instanceAttributes.length; i++) {
+              k = Price.instanceAttributes[i];
+
+              if (o[k] !== undefined) {
+                this[k] = o[k]; // attach properties
+              }
+            }
+          }
+          break;
+        case 'number':
+          this.value = o;
+          this.value_high = !isNaN(p1) && p1;
+          this.currency = Price.CurrencyName[p2 || p1] || 'metal'; // presumed metal if no currency
+          break;
+      }
+
+      this.__defineGetter__('average', function() {
+        if (self.value_high && self.value) {
+          return (self.value + self.value_high) / 2;
         } else {
-          // basic price object
-          // { value: 1, value_high: 2, currency: 'metal' }
-          for (var k, i = 0; i < Price.instanceAttributes.length; i++) {
-            k = Price.instanceAttributes[i];
+          return self.value || 0;
+        }
+      });
+    };
 
-            if (o[k] !== undefined) {
-              this[k] = o[k]; // attach properties
+    Price.prototype.parseJQuery = function($item, scm) {
+      if ($item.data('p_bptf')) {
+        this.parseString($item.data('p_bptf'));
+      } else if ($item.data('p_scm_all') && scm) { // p1 must be set to use scm price as value
+        this.parseString($item.data('p_scm_all')); // the scm value is only the base scm value, and does not included value for additions
+      }
+
+      if ($item.data('p_bptf_all')) {
+        this.parseUSD($item.data('p_bptf_all'));
+      }
+
+      // if there is no value that could be found, but there is a price...
+      if (!this.value && $item.data('price')) {
+        this.value = $item.data('price');
+        this.currency = 'metal';
+      }
+    };
+
+    Price.prototype.parseString = function(string) {
+      var match = string.match(/^([\d\.]*)[\––]?([\d\.]*)? (\w*)/); // "1-1.2 keys"
+
+      if (match) {
+        this.value = parseFloat(match[1]);
+        this.currency = Price.CurrencyName[match[3] || match[2]]; // if it's not in the 3rd group, it's in the 2nd
+
+        // if there are 3 match groups, there is a range
+        if (match[3]) {
+          this.value_high = parseFloat(match[2]);
+        }
+      }
+    };
+
+    Price.prototype.parseUSD = function(string) {
+      var match = string.match(/\$(\d{1,}\.\d{2})/); // 290.00 ref, $33.35
+
+      if (match) {
+        this.usd = parseFloat(match[1]);
+      }
+    };
+
+    Price.prototype.getRefinedValue = function(value) {
+      var currencyValue = Price.RefinedCurrencyValue[this.currency];
+
+      if (currencyValue) {
+        return (value || this.average) * currencyValue;
+      } else {
+        return 0;
+      }
+    };
+
+    Price.RefinedCurrencyValue = {
+      'metal': 1,
+      'keys': 1
+    };
+
+    Price.CurrencyName = {
+      'keys': 'keys',
+      'key': 'keys',
+      'ref': 'metal',
+      '$': 'usd'
+    };
+
+    // get the value of keys in metal
+    Price.getKeyPrice = function() {
+      // get key price only if a key price doesn't already exist, or the force value is truthy
+      // this process is slow (for larger inventories) and mostly only needs to be called once (should take 1-100ms)
+      if (Price.keyPrice) {
+        return;
+      }
+
+      var rawValue = Session.rawCurrency.value;
+
+      Price.RefinedCurrencyValue['usd'] = 1 / rawValue; // set value of usd
+
+      // find items priced in keys
+      // then sort items by price (the higher the price, the more accurate key value we can get)
+      jQuery('.item[data-p_bptf*="keys"]').sort(function(a, b) {
+        var ax = parseFloat($(a).attr('data-price')) || 0;
+        var bx = parseFloat($(b).attr('data-price')) || 0;
+        var val = 0;
+
+        if (ax > bx) {
+          return -1;
+        } else if (ax < bx) {
+          return 1;
+        }
+
+        return 0;
+      }).each(function() {
+        // loop through items until we find an item priced in keys
+        var price = new Price(jQuery(this));
+
+        if (price.currency === 'keys' && price.value && price.usd) {
+          // to get the value of keys in metal...
+          // value of items is 2 keys, or $4.32
+          // keys = 2
+          // usd = 4.32
+          // 4.32 / 2 = 2.16 (the value of 1 key)
+          // 2.16 / 0.12 (rawValue) = 18 (refined metal)
+          Price.setKeyPrice((price.usd / price.average) / rawValue);
+
+          return false; // we found what we're looking for, break the loop
+        }
+      });
+
+      if (!Price.keyPrice) {
+        // set value using the value of a key, if no items in inventory are priced in keys
+        var key = $('.item[data-name="Mann Co. Supply Crate Key"]:first');
+        var price = key && key.length && new Price(key);
+
+        if (price && price.value) {
+          Price.setKeyPrice(price.average);
+        }
+      }
+
+    };
+
+    Price.setKeyPrice = function(value) {
+      Price.keyPrice = value;
+      Price.RefinedCurrencyValue['keys'] = value;
+
+      console.log('key price is: ' + value);
+    };
+
+    Price.instanceAttributes = ['value', 'value_high', 'usd', 'currency'];
+
+    // convert a string to a value in refined metal
+    // when keys are 20 refined, 1 key, 5 ref -> 25
+    Price.stringToRefinedPrice = function(string) {
+      var currencies = Price.stringToCurrencies(string),
+        value = 0,
+        k;
+
+      for (k in currencies) {
+        if (Price.RefinedCurrencyValue[k]) {
+          value += Price.RefinedCurrencyValue[k] * currencies[k]; // multiply amount of currency by value of currency in metal
+        }
+      }
+
+      return Price.roundRefinedValue(value);
+    };
+
+    // round down to nearest 1/36 of a ref
+    Price.roundRefinedValue = function(value) {
+      return value && Math.floor(Math.round(value * 36) / 36 * 100) / 100;
+    };
+
+    // modify an item's bonus values
+    // values is an object:
+    // { strangePart: 0.2, paint: 0.5 }
+    // to value strange parts as 20% value and paint as 50% value
+    Price.modifyBonusValue = function($item, multipliers) {
+      var bonusValue = 0;
+      var rawBonusValue = 0;
+      var baseValue = 0;
+      var isUnusual = $item.data('quality') == 5;
+
+      // does not apply to unusuals
+      if (multipliers && !isUnusual) {
+        var basePrice = $item.data('price') && new Price($item, true);
+        baseValue = (basePrice && basePrice.getRefinedValue()) || 0; // modify based on price attribute
+
+        var bonusValues = {
+          strangePart: [
+            $item.data('part_price_1'), $item.data('part_price_2'), $item.data('part_price_3')
+          ],
+          paint: [$item.data('paint_price')]
+        };
+
+        for (var k in bonusValues) {
+          // loop through values
+          for (var i = 0; i < bonusValues[k].length; i++) {
+            if (bonusValues[k][i]) {
+              var bonusPrice = new Price(bonusValues[k][i]);
+              var bonusPriceRefinedValue = bonusPrice.getRefinedValue();
+
+              bonusValue += bonusPriceRefinedValue * (multipliers[k] || 0); // create price from attribute and multiply its average by multiplier
+              rawBonusValue += bonusPriceRefinedValue;
             }
           }
         }
-        break;
-      case 'number':
-        this.value = o;
-        this.value_high = !isNaN(p1) && p1;
-        this.currency = Price.CurrencyName[p2 || p1] || 'metal'; // presumed metal if no currency
-        break;
-    }
-
-    this.__defineGetter__('average', function() {
-      if (self.value_high && self.value) {
-        return (self.value + self.value_high) / 2;
       } else {
-        return self.value || 0;
-      }
-    });
-  };
-
-  Price.prototype.parseJQuery = function($item, scm) {
-    if ($item.data('p_bptf')) {
-      this.parseString($item.data('p_bptf'));
-    } else if ($item.data('p_scm_all') && scm) { // p1 must be set to use scm price as value
-      this.parseString($item.data('p_scm_all')); // the scm value is only the base scm value, and does not included value for additions
-    }
-
-    if ($item.data('p_bptf_all')) {
-      this.parseUSD($item.data('p_bptf_all'));
-    }
-
-    // if there is no value that could be found, but there is a price...
-    if (!this.value && $item.data('price')) {
-      this.value = $item.data('price');
-      this.currency = 'metal';
-    }
-  };
-
-  Price.prototype.parseString = function(string) {
-    var match = string.match(/^([\d\.]*)[\––]?([\d\.]*)? (\w*)/); // "1-1.2 keys"
-
-    if (match) {
-      this.value = parseFloat(match[1]);
-      this.currency = Price.CurrencyName[match[3] || match[2]]; // if it's not in the 3rd group, it's in the 2nd
-
-      // if there are 3 match groups, there is a range
-      if (match[3]) {
-        this.value_high = parseFloat(match[2]);
-      }
-    }
-  };
-
-  Price.prototype.parseUSD = function(string) {
-    var match = string.match(/\$(\d{1,}\.\d{2})/); // 290.00 ref, $33.35
-
-    if (match) {
-      this.usd = parseFloat(match[1]);
-    }
-  };
-
-  Price.prototype.getRefinedValue = function(value) {
-    var currencyValue = Price.RefinedCurrencyValue[this.currency];
-
-    if (currencyValue) {
-      return (value || this.average) * currencyValue;
-    } else {
-      return 0;
-    }
-  };
-
-  Price.RefinedCurrencyValue = {
-    'metal': 1,
-    'keys': 1
-  };
-
-  Price.CurrencyName = {
-    'keys': 'keys',
-    'key': 'keys',
-    'ref': 'metal',
-    '$': 'usd'
-  };
-
-  // get the value of keys in metal
-  Price.getKeyPrice = function() {
-    // get key price only if a key price doesn't already exist, or the force value is truthy
-    // this process is slow (for larger inventories) and mostly only needs to be called once (should take 1-100ms)
-    if (Price.keyPrice) {
-      return;
-    }
-
-    var rawValue = Session.rawCurrency.value;
-
-    Price.RefinedCurrencyValue['usd'] = 1 / rawValue; // set value of usd
-
-    // find items priced in keys
-    // then sort items by price (the higher the price, the more accurate key value we can get)
-    jQuery('.item[data-p_bptf*="keys"]').sort(function(a, b) {
-      var ax = parseFloat($(a).attr('data-price')) || 0;
-      var bx = parseFloat($(b).attr('data-price')) || 0;
-      var val = 0;
-
-      if (ax > bx) {
-        return -1;
-      } else if (ax < bx) {
-        return 1;
+        baseValue = new Price($item).getRefinedValue();
       }
 
-      return 0;
-    }).each(function() {
-      // loop through items until we find an item priced in keys
-      var price = new Price(jQuery(this));
+      return baseValue + bonusValue;
+    };
 
-      if (price.currency === 'keys' && price.value && price.usd) {
-        // to get the value of keys in metal...
-        // value of items is 2 keys, or $4.32
-        // keys = 2
-        // usd = 4.32
-        // 4.32 / 2 = 2.16 (the value of 1 key)
-        // 2.16 / 0.12 (rawValue) = 18 (refined metal)
-        Price.setKeyPrice((price.usd / price.average) / rawValue);
-
-        return false; // we found what we're looking for, break the loop
-      }
-    });
-
-    if (!Price.keyPrice) {
-      // set value using the value of a key, if no items in inventory are priced in keys
-      var key = $('.item[data-name="Mann Co. Supply Crate Key"]:first');
-      var price = key && key.length && new Price(key);
-
-      if (price && price.value) {
-        Price.setKeyPrice(price.average);
-      }
-    }
-
-  };
-
-  Price.setKeyPrice = function(value) {
-    Price.keyPrice = value;
-    Price.RefinedCurrencyValue['keys'] = value;
-
-    console.log('key price is: ' + value);
-  };
-
-  Price.instanceAttributes = ['value', 'value_high', 'usd', 'currency'];
-
-  // convert a string to a value in refined metal
-  // when keys are 20 refined, 1 key, 5 ref -> 25
-  Price.stringToRefinedPrice = function(string) {
-    var currencies = Price.stringToCurrencies(string),
-      value = 0,
-      k;
-
-    for (k in currencies) {
-      if (Price.RefinedCurrencyValue[k]) {
-        value += Price.RefinedCurrencyValue[k] * currencies[k]; // multiply amount of currency by value of currency in metal
-      }
-    }
-
-    return Price.roundRefinedValue(value);
-  };
-
-  // round down to nearest 1/36 of a ref
-  Price.roundRefinedValue = function(value) {
-    return value && Math.floor(Math.round(value * 36) / 36 * 100) / 100;
-  };
-
-  // modify an item's bonus values
-  // values is an object:
-  // { strangePart: 0.2, paint: 0.5 }
-  // to value strange parts as 20% value and paint as 50% value
-  Price.modifyBonusValue = function($item, multipliers) {
-    var bonusValue = 0;
-    var rawBonusValue = 0;
-    var baseValue = 0;
-    var isUnusual = $item.data('quality') == 5;
-
-    // does not apply to unusuals
-    if (multipliers && !isUnusual) {
-      var basePrice = $item.data('price') && new Price($item, true);
-      baseValue = (basePrice && basePrice.getRefinedValue()) || 0; // modify based on price attribute
-
+    Price.hasBonuses = function($item) {
       var bonusValues = {
         strangePart: [
           $item.data('part_price_1'), $item.data('part_price_2'), $item.data('part_price_3')
@@ -412,68 +510,42 @@ Usage:
       };
 
       for (var k in bonusValues) {
-        // loop through values
         for (var i = 0; i < bonusValues[k].length; i++) {
           if (bonusValues[k][i]) {
-            var bonusPrice = new Price(bonusValues[k][i]);
-            var bonusPriceRefinedValue = bonusPrice.getRefinedValue();
-
-            bonusValue += bonusPriceRefinedValue * (multipliers[k] || 0); // create price from attribute and multiply its average by multiplier
-            rawBonusValue += bonusPriceRefinedValue;
+            return true;
           }
         }
       }
-    } else {
-      baseValue = new Price($item).getRefinedValue();
-    }
 
-    return baseValue + bonusValue;
-  };
-
-  Price.hasBonuses = function($item) {
-    var bonusValues = {
-      strangePart: [
-        $item.data('part_price_1'), $item.data('part_price_2'), $item.data('part_price_3')
-      ],
-      paint: [$item.data('paint_price')]
+      return false;
     };
 
-    for (var k in bonusValues) {
-      for (var i = 0; i < bonusValues[k].length; i++) {
-        if (bonusValues[k][i]) {
-          return true;
+    // convert string of currencies to object of currencies
+    // 5 keys, 5 ref -> { keys: 5, metal: 5 }
+    Price.stringToCurrencies = function(string) {
+      var vals = string.split(', '),
+        i,
+        currency,
+        match,
+        reg = /([\d\.]*) (\w*)/; // currency name, amount
+      var currencies = {};
+
+      for (i = 0; i < vals.length; i++) {
+        match = vals[i].match(reg);
+        currency = match && Price.CurrencyName[match[2]];
+
+        if (currency) {
+          currencies[currency] = parseFloat(match[1]);
         }
       }
-    }
 
-    return false;
-  };
+      return currencies;
+    };
 
-  // convert string of currencies to object of currencies
-  // 5 keys, 5 ref -> { keys: 5, metal: 5 }
-  Price.stringToCurrencies = function(string) {
-    var vals = string.split(', '),
-      i,
-      currency,
-      match,
-      reg = /([\d\.]*) (\w*)/; // currency name, amount
-    var currencies = {};
-
-    for (i = 0; i < vals.length; i++) {
-      match = vals[i].match(reg);
-      currency = match && Price.CurrencyName[match[2]];
-
-      if (currency) {
-        currencies[currency] = parseFloat(match[1]);
-      }
-    }
-
-    return currencies;
-  };
-
-  Price.setup = function() {
-    Price.getKeyPrice(); // get key price
-  };
+    Price.setup = function() {
+      Price.getKeyPrice(); // get key price
+    };
+  }
   //##############################################################################################################################################################
 
   var colors = {
@@ -764,25 +836,32 @@ Usage:
     "Halloween Spell: Gourd Grenades": {
       "cc": ["#f8bb8c"],
       "refprice": 38
+    },
+    "Halloween Spell: Halloween Fire": {
+      "cc": ["#4ef442"],
+      "refprice": 38
     }
   };
 
   let pagetemplate = `<div class="backpack-page">
-    <div class="page-number">
-        <div class="page-anchor" id="page{pagenum}">
-        </div>
-        <a href="#page{pagenum}" class="label label-success" style="{pagestyle}">{pagename}</a>
-        <span class="btn btn-primary btn-xs pull-right select-page">Select Page</span>
-    </div>
-    <ul class="item-list">
-    </ul>
+<div class="page-number">
+<div class="page-anchor" id="page{pagenum}">
+</div>
+<a href="#page{pagenum}" class="label label-success" style="{pagestyle}">{pagename}</a>
+<span class="btn btn-primary btn-xs pull-right select-page">Select Page</span>
+</div>
+<ul class="item-list">
+</ul>
 </div>`;
 
   var newSorts = [
     [
       "Sort by paint", "paint", sortByPaint
     ],
-    ["Sort by spell", "spell", sortBySpell]
+    [
+      "Sort by spell", "spell", sortBySpell
+    ],
+    ["Sort by level", "level", sortByLevel]
   ];
 
   function sortByPaint() {
@@ -851,6 +930,50 @@ Usage:
 
   }
 
+  function sortByLevel() {
+    let l = {};
+    l["No Level"] = {
+      "cc": ["#676780"],
+      "refprice": 0,
+      "items": []
+    };
+    l["Level 0"] = {
+      "cc": ["#DD5522"],
+      "refprice": 0,
+      "items": []
+    };
+
+    let z = $('.item:not(.spacer)');
+
+    for (let p = 0; p < z.length; p++) {
+      if ($(z[p]).attr("data-level") !== undefined) {
+        let level = "Level "+$(z[p]).attr("data-level");
+        if (!l.hasOwnProperty(level)) {
+          l[level] = {
+            "cc": ["#676780"],
+            "refprice": 0,
+            "items": []
+          };
+        }
+        l[level]["items"].push($(z[p])[0]);
+      } else {
+        l["No Level"]["items"].push($(z[p])[0]);
+      }
+
+    }
+
+    for (let k in l) {
+      l[k]["items"] = genericItemSort("data-price", l[k]["items"]);
+
+    }
+
+    genericSort(l, "l", true, {"use": true,
+  "funct": function(a,b){
+    return parseInt(a[0].split(" ")[1])-parseInt(b[0].split(" ")[1]);
+  }});
+
+  }
+
   var lasttype = "";
 
   var sortType = "";
@@ -881,7 +1004,7 @@ Usage:
     return array;
   }
 
-  function genericSort(o, type, hide = false) {
+  function genericSort(o, type, hide = false, csort = {"use": false}) {
 
     $(".item:not(.spacer)").detach();
     $("#backpack").empty();
@@ -892,6 +1015,20 @@ Usage:
       a.push([k, o[k]["cc"], o[k]["refprice"], o[k]["items"]
       ]);
 
+    }
+
+    if(csort.use !== false){
+
+
+      for (let i = 0; i < a.length; i++) {
+          if(a[i][3].length == 0){
+            a.splice(i, 1);
+            i--;
+          }
+
+      }
+
+      a.sort(csort.funct);
     }
 
     if (lasttype == type) {
@@ -922,6 +1059,8 @@ Usage:
 
     }
 
+    filteri();
+
   }
 
   for (let i = 0; i < newSorts.length; i++) {
@@ -947,5 +1086,11 @@ Usage:
   }
 
   markSpells();
+
+  //Stop reverse sorting when another sort was clicked on before
+  $(".dropdown-menu.dropdown-menu-right.pull-right li:not([id^='custom'])").click(function(e) {
+    lasttype = $(this).attr("data-value");
+    filteri();
+  });
 
 })();

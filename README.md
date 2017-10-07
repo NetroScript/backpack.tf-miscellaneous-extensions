@@ -3,6 +3,9 @@ _____________________________________________
 This is an userscript to add miscellaneous functionality to backpack.tf (which I would have liked for myself).
 Currently included is:
 * In inventories add a Sort by paint
+* In inventories add a Sort by spell
+* In inventories add a Sort by level
+
 
 
 ## Installation
@@ -15,6 +18,17 @@ and then install using this link: [backpack.tf extended sorting.user.js](https:/
 ## Changelog
 _____________________________________________
 
+
+#### 0.1.3
+
+Fixed:
+* added missing spell (Halloween Fire)
+* reset last sort when non custom sort was used
+* fixed filtering for items with custom sorts (meaning added complete new filtering which additionally searches for f.e. strange parts, spells, custom name)
+
+Added:
+* Sort by level
+* Possibility to write code to change the order of the backpack pages
 
 #### 0.1.2
 
@@ -40,7 +54,6 @@ Added:
 
 ## Planned features
 _____________________________________________
-* Sort by level
 * Sort by Effect
 * Sort by Lowcraft
 * Sort by Killstreak
@@ -55,5 +68,12 @@ _____________________________________________
 Paint sorting:
 ![Preview](https://raw.githubusercontent.com/NetroScript/backpack.tf-miscellaneous-extensions/master/preview1.png)
 
+
+
 Spell sorting (green dots mean a single spell, red dots mean multi spell):
 ![Preview](https://raw.githubusercontent.com/NetroScript/backpack.tf-miscellaneous-extensions/master/preview2.png)
+
+
+
+Level sorting:
+![Preview](https://raw.githubusercontent.com/NetroScript/backpack.tf-miscellaneous-extensions/master/preview3.png)
