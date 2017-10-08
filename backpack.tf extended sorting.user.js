@@ -137,11 +137,13 @@ colors[c].refprice = parseFloat(refval.join("."))
     filteri = function() {
       filtersearchval = $(".form-control[placeholder='Search...']").val().toLowerCase();
 
-      if(filtersearchval === "") return;
-
       $(".backpack-page").show();
       let sitems = $("#backpack .item");
       sitems.show();
+
+      if(filtersearchval === "") return;
+
+
       sitems.filter(function() {
         if (!this.dataset.hasOwnProperty("filterinfo"))
           return true;
