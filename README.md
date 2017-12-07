@@ -22,6 +22,7 @@ _____________________________________________
 #### 0.1.4
 
 Added:
+* On the pricelist page of unusual effects you now can filter them by class like the unusual by item page
 
 #### 0.1.3
 
@@ -84,4 +85,5 @@ Level sorting:
 
 
 
+Filter the unusual hats by class on the unusual effects pricelist page :
 ![Preview](https://raw.githubusercontent.com/NetroScript/backpack.tf-miscellaneous-extensions/master/preview4.png)
