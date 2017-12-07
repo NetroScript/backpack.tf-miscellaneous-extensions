@@ -19,6 +19,10 @@ and then install using this link: [backpack.tf extended sorting.user.js](https:/
 _____________________________________________
 
 
+#### 0.1.4
+
+Added:
+
 #### 0.1.3
 
 Fixed:
@@ -77,3 +81,7 @@ Spell sorting (green dots mean a single spell, red dots mean multi spell):
 
 Level sorting:
 ![Preview](https://raw.githubusercontent.com/NetroScript/backpack.tf-miscellaneous-extensions/master/preview3.png)
+
+
+
+![Preview](https://raw.githubusercontent.com/NetroScript/backpack.tf-miscellaneous-extensions/master/preview4.png)

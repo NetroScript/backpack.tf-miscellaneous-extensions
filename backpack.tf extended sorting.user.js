@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name         backpack.tf - Miscellaneous Extensions
 // @description  Adds more options for sorting items in backpacks (currently Sorting for paints, spells, levels)
-// @version      0.1.3
+// @version      0.1.4
 // @author       Netroscript
 // @namespace    https://github.com/NetroScript
 // @include      /^https?:\/\/backpack\.tf\/(?:id|profiles)\/.*/
+// @include      /^https?:\/\/backpack\.tf\/effect\/.*/
 // @downloadURL https://github.com/NetroScript/backpack.tf-miscellaneous-extensions/raw/master/backpack.tf%20extended%20sorting.user.js
 // @updateURL   https://github.com/NetroScript/backpack.tf-miscellaneous-extensions/raw/master/backpack.tf%20extended%20sorting.meta.js
 // @grant        none
@@ -86,80 +87,6 @@ colors[c].refprice = parseFloat(refval.join("."))
 
 
 	*/
-
-  //################################## Changes to Filtering ######################
-
-  //Declaring Variables so they are accessible outside the scope
-  let filteri,
-    sIc,
-    filtersearchval,
-    filtertimeout;
-
-  {
-    //Wait until the input is generated
-    sIc = setInterval(function() {
-      let e = $(".form-control[placeholder='Search...']");
-
-      if (e.length == 1) {
-        e = e[0];
-        //Remove the old events
-        let c = e.cloneNode();
-        while (e.firstChild) {
-          c.appendChild(e.lastChild);
-        }
-        e.parentNode.replaceChild(c, e);
-
-        //Add an attribute with information for filtering to every item
-        let aitems = $("#backpack .item:not('.spacer')");
-        let aitemsl = aitems.length;
-        for (let i = 0; i < aitemsl; i++) {
-          let d = $(aitems[i]);
-          let info = (d.children().last().text() + " " + d.attr("data-spell_1") + " " + d.attr("data-spell_2") + " " + d.attr("data-custom_name") + " " + d.attr("data-part_name_3") + " " + d.attr("data-part_name_2") + " " + d.attr("data-part_name_1")).toLowerCase().replace(/ undefined/g, "");
-          d.attr("data-filterinfo", info)
-        }
-
-        //Bind new events
-        $(".form-control[placeholder='Search...']").on("keyup paste", function() {
-          console.log("test")
-          clearTimeout(filtertimeout);
-          filtertimeout = setTimeout(function() {
-            filteri();
-          }, 200)
-
-        })
-
-        clearInterval(sIc);
-      }
-
-    }, 150)
-
-    //New Filter function
-    filteri = function() {
-      filtersearchval = $(".form-control[placeholder='Search...']").val().toLowerCase();
-
-      $(".backpack-page").show();
-      let sitems = $("#backpack .item");
-      sitems.show();
-
-      if(filtersearchval === "") return;
-
-
-      sitems.filter(function() {
-        if (!this.dataset.hasOwnProperty("filterinfo"))
-          return true;
-        if (!(this.dataset.filterinfo.indexOf(filtersearchval) !== -1))
-          return true;
-        return false;
-      }).hide();
-
-      //Hide empty backpack pages
-      $(".backpack-page:has(li:visible)").addClass("dhide");
-      $(".backpack-page").hide();
-      $(".dhide").show().removeClass("dhide");
-
-    };
-  }
-  //##############################################################################
 
   //###############Source: https://gist.github.com/juliarose/4ed4b5bfa606b53c00ed876ad3400e02/a427834d12ba85fc5391a0a9a5bb135b0f5ce039/
   let Price;
@@ -845,7 +772,187 @@ Usage:
     }
   };
 
-  let pagetemplate = `<div class="backpack-page">
+  let filteri,
+    sIc,
+    filtersearchval,
+    filterValue,
+    filtertimeout;
+
+  if (window.location.pathname.split("/effect/").length > 1 && $("table.unusuallist-view").length == 0) {
+
+    let classbuttonstemplate = `<div class="input-group-btn">
+<button class="btn btn-default dropdown-toggle" id="classmenu1" role="button" data-toggle="dropdown" href="#">
+<i class="stm stm-tf2"></i> <span id="className">Any
+class</span>
+</button>
+<ul id="classmenu" class="dropdown-menu" role="menu" aria-labelledby="classmenu1">
+<li><a data-class="All">Any
+class</a></li>
+<li><a data-class="Multi">Multi
+class</a></li>
+<li><a data-class="Scout">Scout</a></li>
+<li><a data-class="Soldier">Soldier</a>
+</li>
+<li><a data-class="Pyro">Pyro</a></li>
+<li><a data-class="Demoman">Demoman</a>
+</li>
+<li><a data-class="Heavy">Heavy</a></li>
+<li><a data-class="Engineer">Engineer</a>
+</li>
+<li><a data-class="Medic">Medic</a></li>
+<li><a data-class="Sniper">Sniper</a>
+</li>
+<li><a data-class="Spy">Spy</a>
+</li>
+</ul>
+</div>`;
+
+    $("#unusual-pricelist-input-group").prepend(classbuttonstemplate);
+
+    let items = $("li.item");
+    let filtervar = "All";
+
+    filteri = function() {
+
+      $(items).filter(function() {
+        $(items).show();
+        var i = $(this).attr('data-class');
+        if (typeof i == 'undefined' && filtervar == "Multi")
+          return false;
+        if (typeof i == 'undefined')
+          return true;
+        return (i.indexOf(filtervar) == -1);
+      }).hide();
+
+    };
+
+    $("#classmenu a").click(function(e) {
+
+      $("#className").text($(e.target).text());
+      filtervar = $(e.target).attr("data-class");
+      filterValue = $('#filterlist').val();
+      if (filtervar != "All")
+        filteri();
+      $(items).filter(function() {
+        return ($(this).attr('data-name').toLowerCase().indexOf(filterValue.toLowerCase()) == -1);
+      }).hide();
+
+    });
+
+    sIc = setInterval(function() {
+      let e = $(".form-control[placeholder='Filter items...']");
+
+      if (e.length == 1) {
+        e = e[0];
+        //Remove the old events
+        let c = e.cloneNode();
+        while (e.firstChild) {
+          c.appendChild(e.lastChild);
+        }
+        e.parentNode.replaceChild(c, e);
+
+        //Bind new events
+        $(".form-control[placeholder='Filter items...']").on("keyup paste", function() {
+          clearTimeout(filtertimeout);
+          filtertimeout = setTimeout(function() {
+            filterValue = $('#filterlist').val();
+
+            if (filtervar != "All")
+              filteri();
+
+            $(items).filter(function() {
+              return ($(this).attr('data-name').toLowerCase().indexOf(filterValue.toLowerCase()) == -1);
+            }).hide();
+
+          }, 80);
+
+        });
+
+        clearInterval(sIc);
+      }
+
+    }, 150);
+
+  }
+
+  if (window.location.pathname.startsWith("/profiles/") || window.location.pathname.startsWith("/id/")) {
+
+    //################################## Changes to Filtering ######################
+
+    //Disable custom filtering if you liked the old method more, use at your own risk, I won't test anything without my filter version
+    let ToggleCustomFilter = true;
+
+    //Declaring Variables so they are accessible outside the scope
+
+    {
+      //Wait until the input is generated
+      if (ToggleCustomFilter)
+        sIc = setInterval(function() {
+          let e = $(".form-control[placeholder='Search...']");
+
+          if (e.length == 1) {
+            e = e[0];
+            //Remove the old events
+            let c = e.cloneNode();
+            while (e.firstChild) {
+              c.appendChild(e.lastChild);
+            }
+            e.parentNode.replaceChild(c, e);
+
+            //Add an attribute with information for filtering to every item
+            let aitems = $("#backpack .item:not('.spacer')");
+            let aitemsl = aitems.length;
+            for (let i = 0; i < aitemsl; i++) {
+              let d = $(aitems[i]);
+              let info = (d.children().last().text() + " " + d.attr("data-spell_1") + " " + d.attr("data-spell_2") + " " + d.attr("data-custom_name") + " " + d.attr("data-part_name_3") + " " + d.attr("data-part_name_2") + " " + d.attr("data-part_name_1")).toLowerCase().replace(/ undefined/g, "");
+              d.attr("data-filterinfo", info);
+            }
+
+            //Bind new events
+            $(".form-control[placeholder='Search...']").on("keyup paste", function() {
+              clearTimeout(filtertimeout);
+              filtertimeout = setTimeout(function() {
+                filteri();
+              }, 200);
+
+            });
+
+            clearInterval(sIc);
+          }
+
+        }, 150);
+
+      //New Filter function
+      filteri = function() {
+        if (ToggleCustomFilter) {
+          filtersearchval = $(".form-control[placeholder='Search...']").val().toLowerCase();
+
+          $(".backpack-page").show();
+          let sitems = $("#backpack .item");
+          sitems.parent().find(".filterhidden").show();
+
+          if (filtersearchval === "")
+            return;
+
+          sitems.filter(function() {
+            if (!this.dataset.hasOwnProperty("filterinfo"))
+              return true;
+            if (!(this.dataset.filterinfo.indexOf(filtersearchval) !== -1))
+              return true;
+            return false;
+          }).hide().addClass("filterhidden");
+        }
+
+        //Hide empty backpack pages
+        $(".backpack-page:has(li:visible)").addClass("dhide");
+        $(".backpack-page").hide();
+        $(".dhide").show().removeClass("dhide");
+
+      };
+    }
+    //##############################################################################
+
+    let pagetemplate = `<div class="backpack-page">
 <div class="page-number">
 <div class="page-anchor" id="page{pagenum}">
 </div>
@@ -856,243 +963,271 @@ Usage:
 </ul>
 </div>`;
 
-  var newSorts = [
-    [
-      "Sort by paint", "paint", sortByPaint
-    ],
-    [
-      "Sort by spell", "spell", sortBySpell
-    ],
-    ["Sort by level", "level", sortByLevel]
-  ];
+    var newSorts = [
+      [
+        "Sort by paint", "paint", sortByPaint
+      ],
+      [
+        "Sort by spell", "spell", sortBySpell
+      ],
+      ["Sort by level", "level", sortByLevel]
+    ];
 
-  function sortByPaint() {
-    let paints = colors;
-    paints["Not Painted"] = {
-      "cc": ["#676780"],
-      "price": "No Paint Price",
-      "refprice": 0
-    };
+    function sortByPaint() {
+      let paints = colors;
+      paints["Not Painted"] = {
+        "cc": ["#676780"],
+        "price": "No Paint Price",
+        "refprice": 0
+      };
 
-    for (let k in paints) {
-      paints[k]["items"] = [];
+      paints["Hidden Items"] = {
+        "cc": ["#676780"],
+        "price": "No Paint Price",
+        "refprice": 0
+      };
 
-    }
+      for (let k in paints) {
+        paints[k]["items"] = [];
 
-    let z = $('.item:not(.spacer)');
-
-    for (let p = 0; p < z.length; p++) {
-      if (paints.hasOwnProperty($(z[p]).attr("data-paint_name"))) {
-        paints[$(z[p]).attr("data-paint_name")]["items"].push($(z[p])[0]);
-      } else {
-        paints["Not Painted"]["items"].push($(z[p])[0]);
       }
 
-    }
+      let z = $('.backpack-page .item:not(.spacer)');
 
-    for (let k in paints) {
-      paints[k]["items"] = genericItemSort("data-price", paints[k]["items"]);
+      paints["Hidden Items"]["items"] = $('.temp-page .item:not(.spacer)');
 
-    }
-
-    genericSort(paints, "p");
-
-  }
-
-  function sortBySpell() {
-    let s = spells;
-    s["No Spell"] = {
-      "cc": ["#676780"],
-      "price": "No Spell Price",
-      "refprice": 0
-    };
-
-    for (let k in s) {
-      s[k]["items"] = [];
-
-    }
-
-    let z = $('.item:not(.spacer)');
-
-    for (let p = 0; p < z.length; p++) {
-      if (s.hasOwnProperty($(z[p]).attr("data-spell_1"))) {
-        s[$(z[p]).attr("data-spell_1")]["items"].push($(z[p])[0]);
-      } else {
-        s["No Spell"]["items"].push($(z[p])[0]);
-      }
-
-    }
-
-    for (let k in s) {
-      s[k]["items"] = genericItemSort("data-price", s[k]["items"]);
-
-    }
-
-    genericSort(s, "s", true);
-
-  }
-
-  function sortByLevel() {
-    let l = {};
-    l["No Level"] = {
-      "cc": ["#676780"],
-      "refprice": 0,
-      "items": []
-    };
-    l["Level 0"] = {
-      "cc": ["#DD5522"],
-      "refprice": 0,
-      "items": []
-    };
-
-    let z = $('.item:not(.spacer)');
-
-    for (let p = 0; p < z.length; p++) {
-      if ($(z[p]).attr("data-level") !== undefined) {
-        let level = "Level "+$(z[p]).attr("data-level");
-        if (!l.hasOwnProperty(level)) {
-          l[level] = {
-            "cc": ["#676780"],
-            "refprice": 0,
-            "items": []
-          };
+      for (let p = 0; p < z.length; p++) {
+        if (paints.hasOwnProperty($(z[p]).attr("data-paint_name"))) {
+          paints[$(z[p]).attr("data-paint_name")]["items"].push($(z[p])[0]);
+        } else {
+          paints["Not Painted"]["items"].push($(z[p])[0]);
         }
-        l[level]["items"].push($(z[p])[0]);
-      } else {
-        l["No Level"]["items"].push($(z[p])[0]);
+
       }
 
-    }
+      for (let k in paints) {
+        paints[k]["items"] = genericItemSort("data-price", paints[k]["items"]);
 
-    for (let k in l) {
-      l[k]["items"] = genericItemSort("data-price", l[k]["items"]);
-
-    }
-
-    genericSort(l, "l", true, {"use": true,
-  "funct": function(a,b){
-    return parseInt(a[0].split(" ")[1])-parseInt(b[0].split(" ")[1]);
-  }});
-
-  }
-
-  var lasttype = "";
-
-  var sortType = "";
-  var text = false;
-  function genericItemSort(sortTyp, array, t = false) {
-    sortType = sortTyp;
-    text = t;
-
-    array.sort(function(a, b) {
-
-      // To reverse the sort, but currently no where needed so commented out
-      // if(toggle && sortType == osortType){
-      //   var tmp = a;
-      //   a = b;
-      //   b = tmp;
-      // }
-
-      if (text) {
-        if ($(a).attr(sortType).toLowerCase() < $(b).attr(sortType).toLowerCase())
-          return -1;
-        if ($(a).attr(sortType).toLowerCase() > $(b).attr(sortType).toLowerCase())
-          return 1;
-        return 0;
       }
-      return parseFloat($(b).attr(sortType)) - parseFloat($(a).attr(sortType));
 
-    });
-    return array;
-  }
-
-  function genericSort(o, type, hide = false, csort = {"use": false}) {
-
-    $(".item:not(.spacer)").detach();
-    $("#backpack").empty();
-    let i = 0;
-    let a = [];
-    for (let k in o) {
-
-      a.push([k, o[k]["cc"], o[k]["refprice"], o[k]["items"]
-      ]);
+      genericSort(paints, "p");
 
     }
 
-    if(csort.use !== false){
+    function sortBySpell() {
+      let s = spells;
+      s["No Spell"] = {
+        "cc": ["#676780"],
+        "price": "No Spell Price",
+        "refprice": 0
+      };
 
+      s["Hidden Items"] = {
+        "cc": ["#676780"],
+        "refprice": 0
+      };
 
-      for (let i = 0; i < a.length; i++) {
-          if(a[i][3].length == 0){
+      for (let k in s) {
+        s[k]["items"] = [];
+
+      }
+
+      let z = $('.backpack-page .item:not(.spacer)');
+
+      s["Hidden Items"]["items"] = $('.temp-page .item:not(.spacer)');
+
+      for (let p = 0; p < z.length; p++) {
+        if (s.hasOwnProperty($(z[p]).attr("data-spell_1"))) {
+          s[$(z[p]).attr("data-spell_1")]["items"].push($(z[p])[0]);
+        } else {
+          s["No Spell"]["items"].push($(z[p])[0]);
+        }
+
+      }
+
+      for (let k in s) {
+        s[k]["items"] = genericItemSort("data-price", s[k]["items"]);
+
+      }
+
+      genericSort(s, "s", true);
+
+    }
+
+    function sortByLevel() {
+      let l = {};
+      l["No Level"] = {
+        "cc": ["#676780"],
+        "refprice": 0,
+        "items": []
+      };
+      //Add Special Colors to specific levels like this
+      l["Level 0"] = {
+        "cc": ["#DD5522"],
+        "refprice": 0,
+        "items": []
+      };
+
+      l["Hidden Items"] = {
+        "cc": ["#676780"],
+        "refprice": 0
+      };
+
+      let z = $('.backpack-page .item:not(.spacer)');
+
+      l["Hidden Items"]["items"] = $('.temp-page .item:not(.spacer)');
+
+      for (let p = 0; p < z.length; p++) {
+        if ($(z[p]).attr("data-level") !== undefined) {
+          let level = "Level " + $(z[p]).attr("data-level");
+          if (!l.hasOwnProperty(level)) {
+            l[level] = {
+              "cc": ["#676780"],
+              "refprice": 0,
+              "items": []
+            };
+          }
+          l[level]["items"].push($(z[p])[0]);
+        } else {
+          l["No Level"]["items"].push($(z[p])[0]);
+        }
+
+      }
+
+      for (let k in l) {
+        l[k]["items"] = genericItemSort("data-price", l[k]["items"]);
+
+      }
+
+      genericSort(l, "l", true, {
+        "use": true,
+        "funct": function(a, b) {
+          return parseInt(a[0].split(" ")[1]) - parseInt(b[0].split(" ")[1]);
+        }
+      });
+
+    }
+
+    var lasttype = "";
+
+    var sortType = "";
+    var text = false;
+    function genericItemSort(sortTyp, array, t = false) {
+      sortType = sortTyp;
+      text = t;
+
+      array.sort(function(a, b) {
+
+        // To reverse the sort, but currently no where needed so commented out
+        // if(toggle && sortType == osortType){
+        //   var tmp = a;
+        //   a = b;
+        //   b = tmp;
+        // }
+
+        if (text) {
+          if ($(a).attr(sortType).toLowerCase() < $(b).attr(sortType).toLowerCase())
+            return -1;
+          if ($(a).attr(sortType).toLowerCase() > $(b).attr(sortType).toLowerCase())
+            return 1;
+          return 0;
+        }
+        return parseFloat($(b).attr(sortType)) - parseFloat($(a).attr(sortType));
+
+      });
+      return array;
+    }
+
+    let BPItems = $(".items:not(.spacer)");
+
+    function genericSort(o, type, hide = false, csort = {
+      "use": false
+    }) {
+      $(".item:not(.spacer)").detach();
+      $("#backpack").empty();
+      let i = 0;
+      let a = [];
+      for (let k in o) {
+
+        a.push([k, o[k]["cc"], o[k]["refprice"], o[k]["items"]
+        ]);
+
+      }
+
+      if (csort.use !== false) {
+
+        for (let i = 0; i < a.length; i++) {
+          if (a[i][3].length == 0) {
             a.splice(i, 1);
             i--;
           }
 
+        }
+
+        a.sort(csort.funct);
       }
 
-      a.sort(csort.funct);
-    }
+      if (lasttype == type) {
+        a.reverse();
+        lasttype = type + "1";
+      } else
+        lasttype = type;
 
-    if (lasttype == type) {
-      a.reverse();
-      lasttype = type + "1";
-    } else
-      lasttype = type;
+      for (let i = 0; i < a.length; i++) {
+        if (!hide || a[i][3].length != 0) {
 
-    for (let i = 0; i < a.length; i++) {
-      if (!hide || a[i][3].length != 0) {
+          let textcolor = "color: " + idealTextColor(a[i][1][0]) + ";";
+          let bgcolor = (a[i][1].length == 1)
+            ? "background-color: " + a[i][1][0] + ";"
+            : "background: linear-gradient( " + a[i][1][0] + " 0%, " + a[i][1][0] + " 50%, " + a[i][1][1] + " 50%," + a[i][1][1] + " 100% );";
 
-        let textcolor = "color: " + idealTextColor(a[i][1][0]) + ";";
-        let bgcolor = (a[i][1].length == 1)
-          ? "background-color: " + a[i][1][0] + ";"
-          : "background: linear-gradient( " + a[i][1][0] + " 0%, " + a[i][1][0] + " 50%, " + a[i][1][1] + " 50%," + a[i][1][1] + " 100% );";
+          $("#backpack").append(pagetemplate.fmt({
+            pagenum: i,
+            pagestyle: textcolor + bgcolor,
+            pagename: a[i][0]
+          }));
 
-        $("#backpack").append(pagetemplate.fmt({
-          pagenum: i,
-          pagestyle: textcolor + bgcolor,
-          pagename: a[i][0]
-        }));
+          for (let r = 0; r < a[i][3].length; r++) {
+            $("#page" + i).parent().parent().find(".item-list").append(a[i][3][r]);
+          }
 
-        for (let r = 0; r < a[i][3].length; r++) {
-          $("#page" + i).parent().parent().find(".item-list").append(a[i][3][r]);
         }
 
       }
 
+      filteri();
+      $(".backpack-page a:contains('Hidden Items')").parent().parent().hide().addClass("temp-page");
     }
 
-    filteri();
+    for (let i = 0; i < newSorts.length; i++) {
 
-  }
-
-  for (let i = 0; i < newSorts.length; i++) {
-
-    $(".panel-extras .dropdown-menu.dropdown-menu-right.pull-right").append(`
+      $(".panel-extras .dropdown-menu.dropdown-menu-right.pull-right").append(`
 <li id="customsort` + i + `" data-value="` + newSorts[i][1] + `"><a>` + newSorts[i][0] + `</a></li>
 `);
-    $("#customsort" + i).click(function(e) {
+      $("#customsort" + i).click(function(e) {
 
-      let i = parseInt($(e.target).parent().attr("id").replace(/^\D+/g, ''));
-      $("#inventory-sort-menu").removeClass("open");
-      $(".current-sort").text(newSorts[i][0]);
-      newSorts[i][2]();
-      e.preventDefault();
-      e.stopPropagation();
+        let i = parseInt($(e.target).parent().attr("id").replace(/^\D+/g, ''));
+        $("#inventory-sort-menu").removeClass("open");
+        $(".current-sort").text(newSorts[i][0]);
+        newSorts[i][2]();
+        e.preventDefault();
+        e.stopPropagation();
+      });
+
+    }
+
+    function markSpells() {
+      $("[data-spell_1]").attr("style", "border-bottom: 6px dotted #10ff00!important");
+      $("[data-spell_2]").attr("style", "border-bottom: 6px dotted #ff2121!important");
+    }
+
+    markSpells();
+
+    //Stop reverse sorting when another sort was clicked on before
+    $(".dropdown-menu.dropdown-menu-right.pull-right li:not([id^='custom'])").click(function(e) {
+      lasttype = $(this).attr("data-value");
+      filteri();
     });
-
   }
-
-  function markSpells() {
-    $("[data-spell_1]").attr("style", "border-bottom: 6px dotted #10ff00!important");
-    $("[data-spell_2]").attr("style", "border-bottom: 6px dotted #ff2121!important");
-  }
-
-  markSpells();
-
-  //Stop reverse sorting when another sort was clicked on before
-  $(".dropdown-menu.dropdown-menu-right.pull-right li:not([id^='custom'])").click(function(e) {
-    lasttype = $(this).attr("data-value");
-    filteri();
-  });
 
 })();
