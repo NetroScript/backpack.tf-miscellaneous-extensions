@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         backpack.tf - Miscellaneous Extensions
-// @description  Adds more options for sorting items in backpacks (currently Sorting for paints, spells, levels)
-// @version      0.1.4
+// @description  Adds more options for sorting items in backpacks (currently Sorting for paints, spells, levels) and other stuff which I would have liked
+// @version      0.1.5
 // @author       Netroscript
 // @namespace    https://github.com/NetroScript
 // @include      /^https?:\/\/backpack\.tf\/(?:id|profiles)\/.*/
@@ -1225,6 +1225,14 @@ class</a></li>
 
     //Stop reverse sorting when another sort was clicked on before
     $(".dropdown-menu.dropdown-menu-right.pull-right li:not([id^='custom'])").click(function(e) {
+      if (lasttype == $(this).attr("data-value")) {
+        e.preventDefault();
+        e.stopPropagation();
+        let b = $('#backpack');
+        b.children().each(function(e, p) {
+          b.prepend(p);
+        });
+      }
       lasttype = $(this).attr("data-value");
       filteri();
     });

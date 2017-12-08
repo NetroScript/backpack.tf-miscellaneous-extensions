@@ -5,6 +5,8 @@ Currently included is:
 * In inventories add a Sort by paint
 * In inventories add a Sort by spell
 * In inventories add a Sort by level
+* Allow the reversion of the groups from a sort
+* Filter by class on backpack.tf/effect/<effect>
 
 
 
@@ -18,6 +20,11 @@ and then install using this link: [backpack.tf extended sorting.user.js](https:/
 ## Changelog
 _____________________________________________
 
+
+#### 0.1.5
+
+Added:
+* Like with my custom sorting methods you can now reverse the groups of the already implemented sorting methods (so you can switch f.e. between old to new and new to old when sorting by time)
 
 #### 0.1.4
 

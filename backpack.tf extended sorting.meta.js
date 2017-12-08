@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         backpack.tf - Miscellaneous Extensions
-// @description  Adds more options for sorting items in backpacks (currently Sorting for paints, spells, levels)
-// @version      0.1.4
+// @description  Adds more options for sorting items in backpacks (currently Sorting for paints, spells, levels) and other stuff which I would have liked
+// @version      0.1.5
 // @author       Netroscript
 // @namespace    https://github.com/NetroScript
 // @include      /^https?:\/\/backpack\.tf\/(?:id|profiles)\/.*/
