@@ -7,6 +7,7 @@ Currently included is:
 * In inventories add a Sort by level
 * Allow the reversion of the groups from a sort
 * Filter by class on backpack.tf/effect/<effect>
+* Marketplace link for any item
 
 
 
@@ -20,6 +21,11 @@ and then install using this link: [backpack.tf extended sorting.user.js](https:/
 ## Changelog
 _____________________________________________
 
+
+#### 0.1.6
+
+Added:
+* In the popover of an item, show a link to the marketplace item (So you have a link even when there are no sales)
 
 #### 0.1.5
 

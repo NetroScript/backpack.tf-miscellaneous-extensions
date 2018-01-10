@@ -1,11 +1,10 @@
 // ==UserScript==
 // @name         backpack.tf - Miscellaneous Extensions
 // @description  Adds more options for sorting items in backpacks (currently Sorting for paints, spells, levels) and other stuff which I would have liked
-// @version      0.1.5
+// @version      0.1.6
 // @author       Netroscript
 // @namespace    https://github.com/NetroScript
-// @include      /^https?:\/\/backpack\.tf\/(?:id|profiles)\/.*/
-// @include      /^https?:\/\/backpack\.tf\/effect\/.*/
+// @include      /^https?:\/\/backpack\.tf\/.*
 // @downloadURL https://github.com/NetroScript/backpack.tf-miscellaneous-extensions/raw/master/backpack.tf%20extended%20sorting.user.js
 // @updateURL   https://github.com/NetroScript/backpack.tf-miscellaneous-extensions/raw/master/backpack.tf%20extended%20sorting.meta.js
 // @grant        none
@@ -970,7 +969,9 @@ class</a></li>
       [
         "Sort by spell", "spell", sortBySpell
       ],
-      ["Sort by level", "level", sortByLevel]
+      [
+        "Sort by level", "level", sortByLevel
+      ]
     ];
 
     function sortByPaint() {
@@ -1149,7 +1150,10 @@ class</a></li>
       let a = [];
       for (let k in o) {
 
-        a.push([k, o[k]["cc"], o[k]["refprice"], o[k]["items"]
+        a.push([
+          k, o[k]["cc"],
+          o[k]["refprice"],
+          o[k]["items"]
         ]);
 
       }
@@ -1237,5 +1241,57 @@ class</a></li>
       filteri();
     });
   }
+
+  function genMP(el) {
+    let query = "https://marketplace.tf/items/";
+    let it = $(el);
+    let defindex = it.attr("data-defindex");
+    query += defindex + ";" + it.attr("data-quality");
+
+    let effectid = it.attr("data-effect_id");
+    if (effectid !== null && effectid !== undefined) {
+      query += ";u" + effectid;
+    }
+
+    let kstier = it.attr("data-ks_tier");
+    if (kstier !== null && kstier !== undefined) {
+      query += ";kt-" + kstier;
+    }
+
+    let skininfo = it.find(".item-icon");
+    if (skininfo.length > 0) {
+      skininfo = skininfo.css("background-image").match(/warpaint\/[(?!_)\S]+_[0-9]+_[0-9]+_[0-9]+\.png/g);
+      if (skininfo !== null) {
+        let skin = skininfo[0].split("_")[1];
+        let wear = skininfo[0].split("_")[2];
+        query += ";pk" + skin + ";w" + wear;
+      }
+    }
+
+    if (it.attr("data-quality_elevated") == "11")
+      query += ";strange";
+    if (it.attr("data-craftable") !== "1")
+      query += ";uncraftable";
+    return query;
+  }
+
+  //Modify Popover
+  $(".item").hover(function(e) {
+    {
+      let self = this;
+      let id = setInterval(function() {
+
+        if ($(self).next().hasClass("popover")) {
+          let popover = $(self).next().find("#popover-search-links");
+          popover.append(`<a class="btn btn-default btn-xs" href="` + genMP($(self)[0]) + `" target="_blank"><img src="/images/marketplace-small.png?v=2" style='width: 13px;height: 13px;margin-top: -4px;'> Marketplace</a>`);
+          clearInterval(id);
+        }
+
+      }, 50);
+      setTimeout(function() {
+        clearInterval(id);
+      }, 750);
+    }
+  }, function() {});
 
 })();
