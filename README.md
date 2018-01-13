@@ -22,6 +22,12 @@ and then install using this link: [backpack.tf extended sorting.user.js](https:/
 _____________________________________________
 
 
+#### 0.1.7
+
+Fixed:
+* Marketplace link appearing multiple times when hovering multiple times
+* Marketplace link now only appears if no price is known
+
 #### 0.1.6
 
 Added:

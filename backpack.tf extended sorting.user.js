@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         backpack.tf - Miscellaneous Extensions
 // @description  Adds more options for sorting items in backpacks (currently Sorting for paints, spells, levels) and other stuff which I would have liked
-// @version      0.1.6
+// @version      0.1.7
 // @author       Netroscript
 // @namespace    https://github.com/NetroScript
 // @include      /^https?:\/\/backpack\.tf\/.*
@@ -1282,11 +1282,28 @@ class</a></li>
       let id = setInterval(function() {
 
         if ($(self).next().hasClass("popover")) {
-          let popover = $(self).next().find("#popover-search-links");
-          popover.append(`<a class="btn btn-default btn-xs" href="` + genMP($(self)[0]) + `" target="_blank"><img src="/images/marketplace-small.png?v=2" style='width: 13px;height: 13px;margin-top: -4px;'> Marketplace</a>`);
+
+          let popover = $(self).next().find("#popover-price-links");
+
+          let id2 = setInterval(function() {
+
+            let checkingmp = popover.find(".fa-spinner").length;
+            if (checkingmp <= 0) {
+
+              if (popover.find("a[href^='https://marketplace.tf']").length !== 1 && popover.find(".cmpb").length < 1) {
+                popover.append(`<a class="btn btn-default btn-xs cmpb" href="` + genMP($(self)[0]) + `" target="_blank"><img src="/images/marketplace-small.png?v=2" style='width: 13px;height: 13px;margin-top: -4px;'> Marketplace</a>`);
+              }
+
+              clearInterval(id2);
+            }
+          }, 50);
+
+          setTimeout(function() {
+            clearInterval(id2);
+          }, 1000);
+
           clearInterval(id);
         }
-
       }, 50);
       setTimeout(function() {
         clearInterval(id);
