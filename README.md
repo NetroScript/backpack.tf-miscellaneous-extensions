@@ -22,6 +22,11 @@ and then install using this link: [backpack.tf extended sorting.user.js](https:/
 _____________________________________________
 
 
+#### 0.1.8
+
+Added:
+* In the class menus on the effect / unusual pricing pages add Miscs as class (meaning unusuals which you can equip over other unusuals) (Should I miss some there feel free to send me a message)
+
 #### 0.1.7
 
 Fixed:

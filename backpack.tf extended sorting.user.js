@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         backpack.tf - Miscellaneous Extensions
 // @description  Adds more options for sorting items in backpacks (currently Sorting for paints, spells, levels) and other stuff which I would have liked
-// @version      0.1.7
+// @version      0.1.8
 // @author       Netroscript
 // @namespace    https://github.com/NetroScript
 // @include      /^https?:\/\/backpack\.tf\/.*
@@ -777,9 +777,41 @@ Usage:
     filterValue,
     filtertimeout;
 
-  if (window.location.pathname.split("/effect/").length > 1 && $("table.unusuallist-view").length == 0) {
+  if ((window.location.pathname.split("/effect/").length > 1 || window.location.pathname.startsWith("/unusuals")) && $("table.unusuallist-view").length == 0) {
+    let misc_ids = ["938_","361_","30140_","993_","30329_","783_","393_","30646_","451_","339_","54_","315_","590_","316_","605_","30095_","110_","337_","380_","48_","30004_"];
 
-    let classbuttonstemplate = `<div class="input-group-btn">
+    let items = $("li.item");
+    let filtervar = "All";
+
+    filteri = function() {
+
+      $(items).filter(function() {
+        $(items).show();
+        var i = $(this).attr('data-class');
+        if (filtervar == "misci") {
+          return (misc_ids.indexOf($(this).attr('data-defindex') + "_") == -1);
+        }
+        if (typeof i == 'undefined' && filtervar == "Multi")
+          return false;
+        if (typeof i == 'undefined')
+          return true;
+        return (i.indexOf(filtervar) == -1);
+      }).hide();
+
+    };
+
+    sIc = setInterval(function() {
+      let e = $(".form-control[placeholder='Filter items...']");
+
+      if (e.length == 1) {
+        e = e[0];
+        //Remove the old events
+        let c = e.cloneNode();
+        while (e.firstChild) {
+          c.appendChild(e.lastChild);
+        }
+        e.parentNode.replaceChild(c, e);
+        let classbuttonstemplate = `<div class="input-group-btn">
 <button class="btn btn-default dropdown-toggle" id="classmenu1" role="button" data-toggle="dropdown" href="#">
 <i class="stm stm-tf2"></i> <span id="className">Any
 class</span>
@@ -803,52 +835,28 @@ class</a></li>
 </li>
 <li><a data-class="Spy">Spy</a>
 </li>
+<li><a data-class="misci">Miscs</a>
+</li>
 </ul>
 </div>`;
 
-    $("#unusual-pricelist-input-group").prepend(classbuttonstemplate);
-
-    let items = $("li.item");
-    let filtervar = "All";
-
-    filteri = function() {
-
-      $(items).filter(function() {
-        $(items).show();
-        var i = $(this).attr('data-class');
-        if (typeof i == 'undefined' && filtervar == "Multi")
-          return false;
-        if (typeof i == 'undefined')
-          return true;
-        return (i.indexOf(filtervar) == -1);
-      }).hide();
-
-    };
-
-    $("#classmenu a").click(function(e) {
-
-      $("#className").text($(e.target).text());
-      filtervar = $(e.target).attr("data-class");
-      filterValue = $('#filterlist').val();
-      if (filtervar != "All")
-        filteri();
-      $(items).filter(function() {
-        return ($(this).attr('data-name').toLowerCase().indexOf(filterValue.toLowerCase()) == -1);
-      }).hide();
-
-    });
-
-    sIc = setInterval(function() {
-      let e = $(".form-control[placeholder='Filter items...']");
-
-      if (e.length == 1) {
-        e = e[0];
-        //Remove the old events
-        let c = e.cloneNode();
-        while (e.firstChild) {
-          c.appendChild(e.lastChild);
+        if (window.location.pathname.startsWith("/unusuals")) {
+          $($("#unusual-pricelist-input-group").children()[0]).remove();
         }
-        e.parentNode.replaceChild(c, e);
+        $("#unusual-pricelist-input-group").prepend(classbuttonstemplate);
+
+        $("#classmenu a").click(function(e) {
+
+          $("#className").text($(e.target).text());
+          filtervar = $(e.target).attr("data-class");
+          filterValue = $('#filterlist').val();
+          if (filtervar != "All")
+            filteri();
+          $(items).filter(function() {
+            return ($(this).attr('data-name').toLowerCase().indexOf(filterValue.toLowerCase()) == -1);
+          }).hide();
+
+        });
 
         //Bind new events
         $(".form-control[placeholder='Filter items...']").on("keyup paste", function() {
