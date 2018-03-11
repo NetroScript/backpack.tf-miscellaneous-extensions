@@ -22,6 +22,15 @@ and then install using this link: [backpack.tf extended sorting.user.js](https:/
 _____________________________________________
 
 
+#### 0.1.9 (After the new Inventory Update (Inventories load after the page loaded))
+
+Fixed:
+* fixed custom sorts being on a wrong drop down
+* custom sorts break when using them before the inventory loaded
+
+Removed:
+* Price Module (wasn't used anyways, and should it be needed again I will make an own implementation)
+
 #### 0.1.8
 
 Added:
