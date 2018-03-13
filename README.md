@@ -22,6 +22,12 @@ and then install using this link: [backpack.tf extended sorting.user.js](https:/
 _____________________________________________
 
 
+#### 0.1.10
+
+Fixed:
+* Spells not being display with the inventory load now after page loaded
+* When searching in the effect or unusuals the unusuals didn't reappear but stayed hidden (in some cases) when removing parts of the search term
+
 #### 0.1.9 (After the new Inventory Update (Inventories load after the page loaded))
 
 Fixed:

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         backpack.tf - Miscellaneous Extensions
 // @description  Adds more options for sorting items in backpacks (currently Sorting for paints, spells, levels) and other stuff which I would have liked
-// @version      0.1.9
+// @version      0.1.10
 // @author       Netroscript
 // @namespace    https://github.com/NetroScript
 // @include      /^https?:\/\/backpack\.tf\/.*
@@ -461,9 +461,11 @@ class</a></li>
           $("#className").text($(e.target).text());
           filtervar = $(e.target).attr("data-class");
           filterValue = $('#filterlist').val();
+          $(items).show();
           if (filtervar != "All")
             filteri();
           $(items).filter(function() {
+              if(filterValue.length == 0) return false;
             return ($(this).attr('data-name').toLowerCase().indexOf(filterValue.toLowerCase()) == -1);
           }).hide();
 
@@ -474,11 +476,12 @@ class</a></li>
           clearTimeout(filtertimeout);
           filtertimeout = setTimeout(function() {
             filterValue = $('#filterlist').val();
-
+            $(items).show();
             if (filtervar != "All")
               filteri();
 
             $(items).filter(function() {
+                if(filterValue.length == 0) return false;
               return ($(this).attr('data-name').toLowerCase().indexOf(filterValue.toLowerCase()) == -1);
             }).hide();
 
@@ -537,6 +540,8 @@ class</a></li>
 
             });
 
+
+
       			        //New Filter function
             filteri = function() {
               if (ToggleCustomFilter) {
@@ -564,7 +569,7 @@ class</a></li>
               $(".dhide").show().removeClass("dhide");
 
             };
-
+            markSpells();
             clearInterval(sIc);
           }
 
@@ -843,12 +848,8 @@ class</a></li>
 
     }
 
-    function markSpells() {
-      $("[data-spell_1]").attr("style", "border-bottom: 6px dotted #10ff00!important");
-      $("[data-spell_2]").attr("style", "border-bottom: 6px dotted #ff2121!important");
-    }
 
-    markSpells();
+
 
     //Stop reverse sorting when another sort was clicked on before
     $(".dropdown-menu.dropdown-menu-right.pull-right li:not([id^='custom'])").click(function(e) {
@@ -863,6 +864,11 @@ class</a></li>
       lasttype = $(this).attr("data-value");
       filteri();
     });
+  }
+
+  function markSpells() {
+    $("[data-spell_1]").attr("style", "border-bottom: 6px dotted #10ff00!important");
+    $("[data-spell_2]").attr("style", "border-bottom: 6px dotted #ff2121!important");
   }
 
   function genMP(el) {
