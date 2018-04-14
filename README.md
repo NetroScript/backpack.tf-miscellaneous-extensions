@@ -22,6 +22,11 @@ and then install using this link: [backpack.tf extended sorting.user.js](https:/
 _____________________________________________
 
 
+#### 0.1.11
+
+Fixed:
+* Function to access Popover now works on Items which are loaded after page load
+
 #### 0.1.10
 
 Fixed:

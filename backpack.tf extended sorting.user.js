@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         backpack.tf - Miscellaneous Extensions
 // @description  Adds more options for sorting items in backpacks (currently Sorting for paints, spells, levels) and other stuff which I would have liked
-// @version      0.1.10
+// @version      0.1.11
 // @author       Netroscript
 // @namespace    https://github.com/NetroScript
 // @include      /^https?:\/\/backpack\.tf\/.*
@@ -905,8 +905,7 @@ class</a></li>
   }
 
   //Modify Popover
-  $(".item").hover(function(e) {
-    {
+  $("body").on("mouseover", ".item", function(e) {
       let self = this;
       let id = setInterval(function() {
 
@@ -937,7 +936,6 @@ class</a></li>
       setTimeout(function() {
         clearInterval(id);
       }, 750);
-    }
-  }, function() {});
+    });
 
 })();
