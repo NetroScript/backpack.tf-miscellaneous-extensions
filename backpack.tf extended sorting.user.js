@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         backpack.tf - Miscellaneous Extensions
 // @description  Adds more options for sorting items in backpacks (currently Sorting for paints, spells, levels) and other stuff which I would have liked
-// @version      0.1.11
+// @version      0.1.12
 // @author       Netroscript
 // @namespace    https://github.com/NetroScript
 // @include      /^https?:\/\/backpack\.tf\/.*
@@ -893,7 +893,7 @@ class</a></li>
       if (skininfo !== null) {
         let skin = skininfo[0].split("_")[1];
         let wear = skininfo[0].split("_")[2];
-        query += ";pk" + skin + ";w" + wear;
+        query += ";w" + wear + ";pk" + skin;
       }
     }
 

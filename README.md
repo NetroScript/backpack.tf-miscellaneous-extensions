@@ -22,6 +22,11 @@ and then install using this link: [backpack.tf extended sorting.user.js](https:/
 _____________________________________________
 
 
+#### 0.1.12
+
+Fixed:
+* Wrong URL syntax for skins when generating a marketplace.tf link
+
 #### 0.1.11
 
 Fixed:
