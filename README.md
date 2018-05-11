@@ -22,6 +22,11 @@ and then install using this link: [backpack.tf extended sorting.user.js](https:/
 _____________________________________________
 
 
+#### 0.1.13
+
+Added:
+* When entering a Texture Name in Texture & Wear you can now autocomplete with tab (Press tab again to cycle between alternative suggestions)
+
 #### 0.1.12
 
 Fixed:

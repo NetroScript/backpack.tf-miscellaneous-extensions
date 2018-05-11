@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         backpack.tf - Miscellaneous Extensions
 // @description  Adds more options for sorting items in backpacks (currently Sorting for paints, spells, levels) and other stuff which I would have liked
-// @version      0.1.12
+// @version      0.1.13
 // @author       Netroscript
 // @namespace    https://github.com/NetroScript
 // @include      /^https?:\/\/backpack\.tf\/.*
@@ -903,6 +903,41 @@ class</a></li>
       query += ";uncraftable";
     return query;
   }
+
+let skinnames = ["Bovine Blazemaker", "War Room", "Treadplate Tormenter", "Bogtrotter", "Earth, Sky and Fire", "Team Sprayer", "Spruce Deuce", "Hickory Hole-Puncher", "Rooftop Wrangler", "Civic Duty", "Civil Servant", "Local Hero", "Mayor", "Smalltown Bringdown", "Citizen Pain", "Tartan Torpedo", "Lumber From Down Under", "Rustic Ruiner", "Barn Burner", "Homemade Heater", "Plaid Potshotter", "Country Crusher", "Iron Wood", "Shot in the Dark", "Blasted Bombardier", "Backcountry Blaster", "Antique Annihilator", "Old Country", "American Pastoral", "Reclaimed Reanimator", "Red Rock Roscoe", "Sand Cannon", "Sudden Flurry", "Psychedelic Slugger", "Purple Range", "Night Terror", "Carpet Bomber", "Woodland Warrior", "Wrapped Reviver", "Forest Fire", "Night Owl", "Woodsy Widowmaker", "Backwoods Boomstick", "King of the Jungle", "Masked Mender", "Thunderbolt", "Liquid Asset", "Shell Shocker", "Current Event", "Pink Elephant", "Flash Fryer", "Spark of Life", "Dead Reckoner", "Black Dahlia", "Sandstone Special", "Lightning Rod", "Brick House", "Aqua Marine", "Low Profile", "Turbine Torcher", "Boneyard", "Pumpkin Patch", "Macabre Web", "Autumn", "Nutcracker", "Wildwood", "Top Shelf", "High Roller's", "Coffin Nail", "Dressed to Kill", "Rainbow", "Balloonicorn", "Sweet Dreams", "Mister Cuddles", "Blue Mew", "Shot to Hell", "Torqued to Hell", "Stabbed to Hell", "Brain Candy", "Flower Power", "Killer Bee", "Warhawk", "Red Bear", "Butcher Bird", "Airwolf", "Blitzkrieg", "Corsair", "Anodized Aloha", "Bamboo Brushed", "Croc Dusted", "Leopard Printed", "Macaw Masked", "Mannana Peeled", "Park Pigmented", "Piña Polished", "Sax Waxed", "Tiger Buffed", "Yeti Coated", "Bank Rolled", "Bloom Buffed", "Bonk Varnished", "Cardboard Boxed", "Clover Camo'd", "Dream Piped", "Fire Glazed", "Freedom Wrapped", "Kill Covered", "Merc Stained", "Pizza Polished", "Quack Canvassed", "Star Crossed", "Carpet Bomber Mk.II", "Woodland Warrior Mk.II", "Wrapped Reviver Mk.II", "Forest Fire Mk.II", "Night Owl Mk.II", "Woodsy Widowmaker Mk.II", "Autumn Mk.II", "Plaid Potshotter Mk.II", "Civic Duty Mk.II", "Civil Servant Mk.II", "Dead Reckoner Mk.II", "Bovine Blazemaker Mk.II", "Backwoods Boomstick Mk.II", "Masked Mender Mk.II", "Macabre Web Mk.II", "Iron Wood Mk.II", "Nutcracker Mk.II", "Smalltown Bringdown Mk.II", "Dragon Slayer", "Smissmas Sweater", "Miami Element", "Jazzy", "Mosaic", "Cosmic Calamity", "Hana", "Uranium", "Neo Tokyo", "Hazard Warning", "Damascus & Mahogany", "Dovetailed", "Alien Tech", "Cabin Fevered", "Polar Surprise", "Bomber Soul", "Geometrical Teams"];
+let svariants = [];
+
+//Skin Name Autocomplete
+
+//Prevent Tab changing the focus
+$("#page-content").on("keydown", "input[placeholder='An exact texture name is required (Warhawk, Coffin Nail, Dressed to Kill, etc.)']", function (e) {
+  if (e.which == 9 || e.keyCode == 9) {
+    e.preventDefault();
+  }
+});
+$("#page-content").on("keyup", "input[placeholder='An exact texture name is required (Warhawk, Coffin Nail, Dressed to Kill, etc.)']", function (e) {
+
+  if (e.which == 9 || e.keyCode == 9) {
+    e.preventDefault();
+    $("input[placeholder='An exact texture name is required (Warhawk, Coffin Nail, Dressed to Kill, etc.)").val(svariants[0]);
+    svariants.push(svariants.shift());
+    $("#autocompskin").text("");
+  } else {
+    let template = `<div id="autocompskin" style="color:gray;position: absolute;pointer-events: none;user-select: none;-moz-user-select: none;-khtml-user-select: none;-webkit-user-select: none;-o-user-select: none;transform: translate(13px, -25px);"></div>`;
+    svariants = [];
+    let min = 1000;
+    let int = $("input[placeholder='An exact texture name is required (Warhawk, Coffin Nail, Dressed to Kill, etc.)");
+    if ($("#autocompskin").length == 0) $(template).insertAfter(int);
+    let sl = skinnames.length;
+    for (let i = 0; i < sl; i++) {
+      if (skinnames[i].toLowerCase().startsWith(int.val().toLowerCase())) svariants.push(skinnames[i]);
+    }
+
+    if (svariants.length == sl || svariants.length == 0) $("#autocompskin").text("")
+    else $("#autocompskin").text(svariants[0] + " - Press Tab to autocomplete, press again for alternative suggestions")
+
+  }
+})
 
   //Modify Popover
   $("body").on("mouseover", ".item", function(e) {
