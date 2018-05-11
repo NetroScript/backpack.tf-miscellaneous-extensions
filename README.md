@@ -7,6 +7,8 @@ Currently included is:
 * In inventories add a Sort by level
 * Allow the reversion of the groups from a sort
 * Filter by class on backpack.tf/effect/<effect>
+* For unusuals you can not only filter for class but now also filter for miscs
+* When building a search for classifieds or premium you now can autocomplete skin names
 * Marketplace link for any item
 
 
