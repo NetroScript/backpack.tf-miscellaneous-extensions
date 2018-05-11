@@ -100,7 +100,7 @@ Added:
 
 Fixed:
 * generalized Sorting functions
-* removed emtpy item containers which were used for spacing the normal inventory pages
+* removed empty item containers which were used for spacing the normal inventory pages
 
 Added:
 * sorting the single pages (f.e. sorting Paints by price)
@@ -117,7 +117,7 @@ _____________________________________________
 * Sort by Lowcraft
 * Sort by Killstreak
 * Sort by Tier (and wear secondary)
-* Sort by discout
+* Sort by discount
 
 
 
