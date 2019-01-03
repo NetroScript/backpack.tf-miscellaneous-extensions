@@ -24,6 +24,16 @@ and then install using this link: [backpack.tf extended sorting.user.js](https:/
 _____________________________________________
 
 
+#### 0.1.14
+
+Added:
+* Added Halloween war paints to the Autocomplete
+
+Improved:
+* Now when using the refresh button spells will still be marked
+* After a backpack update changed the name from "Sort by" to "Group by" it was also changed in this userscript
+* Replaced the default Group by item index (because that grouped only per page). By default this will now add 1 group for every defindex, if you want all items in a single page ordered instead of per defindex there is a variable singlepage in the code which you can set to true
+
 #### 0.1.13
 
 Added:

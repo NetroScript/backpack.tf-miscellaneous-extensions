@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         backpack.tf - Miscellaneous Extensions
 // @description  Adds more options for sorting items in backpacks (currently Sorting for paints, spells, levels) and other stuff which I would have liked
-// @version      0.1.13
+// @version      0.1.14
 // @author       Netroscript
 // @namespace    https://github.com/NetroScript
 // @include      /^https?:\/\/backpack\.tf\/.*
@@ -386,7 +386,8 @@ colors[c].refprice = parseFloat(refval.join("."))
     sIc,
     filtersearchval,
     filterValue,
-    filtertimeout;
+    filtertimeout,
+	sIc2;
 
   if ((window.location.pathname.split("/effect/").length > 1 || window.location.pathname.startsWith("/unusuals")) && $("table.unusuallist-view").length == 0) {
     let misc_ids = ["938_","361_","30140_","993_","30329_","783_","393_","30646_","451_","339_","54_","315_","590_","316_","605_","30095_","110_","337_","380_","48_","30004_"];
@@ -542,7 +543,7 @@ class</a></li>
 
 
 
-      			        //New Filter function
+			//New Filter function
             filteri = function() {
               if (ToggleCustomFilter) {
                 filtersearchval = $(".form-control[placeholder='Search...']").val().toLowerCase();
@@ -570,6 +571,37 @@ class</a></li>
 
             };
             markSpells();
+			
+			//Execute the needed functions after the inventory is reloaded
+			$("#refresh-inventory").click(function(){
+				sIc2 = setInterval(function() {
+				  let e = $(".inventory .item");
+
+				  if (e.length > 0) {
+					  
+					 
+					//Add an attribute with information for filtering to every item
+					let aitems = $("#backpack .item:not('.spacer')");
+					let aitemsl = aitems.length;
+					for (let i = 0; i < aitemsl; i++) {
+					  let d = $(aitems[i]);
+					  let info = (d.children().last().text() + " " + d.attr("data-spell_1") + " " + d.attr("data-spell_2") + " " + d.attr("data-custom_name") + " " + d.attr("data-part_name_3") + " " + d.attr("data-part_name_2") + " " + d.attr("data-part_name_1")).toLowerCase().replace(/ undefined/g, "");
+					  d.attr("data-filterinfo", info);
+					}
+					
+					//Hide empty backpack pages
+					$(".backpack-page:has(li:visible)").addClass("dhide");
+					$(".backpack-page").hide();
+					$(".dhide").show().removeClass("dhide");
+
+					
+					markSpells();
+					filteri();
+					clearInterval(sIc2);
+				  }
+
+				}, 150);
+			})
             clearInterval(sIc);
           }
 
@@ -592,13 +624,13 @@ class</a></li>
 
     var newSorts = [
       [
-        "Sort by paint", "paint", sortByPaint
+        "Group by paint", "paint", sortByPaint
       ],
       [
-        "Sort by spell", "spell", sortBySpell
+        "Group by spell", "spell", sortBySpell
       ],
       [
-        "Sort by level", "level", sortByLevel
+        "Group by level", "level", sortByLevel
       ]
     ];
 
@@ -831,6 +863,8 @@ class</a></li>
       $(".backpack-page a:contains('Hidden Items')").parent().parent().hide().addClass("temp-page");
     }
 
+	
+	//Adding new Sorting Methods
     for (let i = 0; i < newSorts.length; i++) {
 
       $(".panel-extras #inventory-sort-menu .dropdown-menu.dropdown-menu-right.pull-right").append(`
@@ -847,9 +881,78 @@ class</a></li>
       });
 
     }
+	
+	
+	//Replace Sorting
+    var replaceSorts = {
+        "defindex": sortByDefindex
+	}
 
 
+	function sortByDefindex() {
+      let d= {};
+      d["No Defindex"] = {
+        "cc": ["#676780"],
+        "refprice": 0,
+        "items": []
+      };
+      d["Items"] = {
+        "cc": ["#676780"],
+        "refprice": 0,
+        "items": []
+      };
+      d["Hidden Items"] = {
+        "cc": ["#676780"],
+        "refprice": 0
+      };
 
+      let z = $('.backpack-page .item:not(.spacer)');
+	  
+	  
+	  //If you want all defindexes on a single page and not a group for each defindex change the singlepage value
+	  let singlepage = false;
+
+      d["Hidden Items"]["items"] = $('.temp-page .item:not(.spacer)');
+
+      for (let p = 0; p < z.length; p++) {
+        if ($(z[p]).attr("data-defindex") !== undefined) {
+          let def = "Defindex: "+$(z[p]).attr("data-defindex");
+		  if(!singlepage){
+			  if (!d.hasOwnProperty(def)) {
+				d[def] = {
+				  "cc": ["#676780"],
+				  "refprice": 0,
+				  "items": []
+				};
+			  }
+			  d[def]["items"].push($(z[p])[0]);
+		  } else {
+			  d["Items"]["items"].push($(z[p])[0]);
+		  }
+        } else {
+          d["No Defindex"]["items"].push($(z[p])[0]);
+        }
+
+      }
+
+	  if(!singlepage)
+		  for (let k in d) {
+			d[k]["items"] = genericItemSort("data-price", d[k]["items"]);
+		  }
+	  else 
+		  for (let k in d) {
+			d[k]["items"] = genericItemSort("data-defindex", d[k]["items"]);
+		  }  
+
+      genericSort(d, "d", true, {
+        "use": true,
+        "funct": function(a, b) {
+          return parseInt(a[0].split(" ")[1]) - parseInt(b[0].split(" ")[1]);
+        }
+      });
+
+
+    }
 
     //Stop reverse sorting when another sort was clicked on before
     $(".dropdown-menu.dropdown-menu-right.pull-right li:not([id^='custom'])").click(function(e) {
@@ -860,7 +963,13 @@ class</a></li>
         b.children().each(function(e, p) {
           b.prepend(p);
         });
-      }
+      } else if(replaceSorts.hasOwnProperty($(this).attr("data-value"))){
+        $("#inventory-sort-menu").removeClass("open");
+        $(".current-sort").text($(this).text());
+		replaceSorts[$(this).attr("data-value")]()
+        e.preventDefault();
+        e.stopPropagation();
+	  }
       lasttype = $(this).attr("data-value");
       filteri();
     });
@@ -904,7 +1013,7 @@ class</a></li>
     return query;
   }
 
-let skinnames = ["Bovine Blazemaker", "War Room", "Treadplate Tormenter", "Bogtrotter", "Earth, Sky and Fire", "Team Sprayer", "Spruce Deuce", "Hickory Hole-Puncher", "Rooftop Wrangler", "Civic Duty", "Civil Servant", "Local Hero", "Mayor", "Smalltown Bringdown", "Citizen Pain", "Tartan Torpedo", "Lumber From Down Under", "Rustic Ruiner", "Barn Burner", "Homemade Heater", "Plaid Potshotter", "Country Crusher", "Iron Wood", "Shot in the Dark", "Blasted Bombardier", "Backcountry Blaster", "Antique Annihilator", "Old Country", "American Pastoral", "Reclaimed Reanimator", "Red Rock Roscoe", "Sand Cannon", "Sudden Flurry", "Psychedelic Slugger", "Purple Range", "Night Terror", "Carpet Bomber", "Woodland Warrior", "Wrapped Reviver", "Forest Fire", "Night Owl", "Woodsy Widowmaker", "Backwoods Boomstick", "King of the Jungle", "Masked Mender", "Thunderbolt", "Liquid Asset", "Shell Shocker", "Current Event", "Pink Elephant", "Flash Fryer", "Spark of Life", "Dead Reckoner", "Black Dahlia", "Sandstone Special", "Lightning Rod", "Brick House", "Aqua Marine", "Low Profile", "Turbine Torcher", "Boneyard", "Pumpkin Patch", "Macabre Web", "Autumn", "Nutcracker", "Wildwood", "Top Shelf", "High Roller's", "Coffin Nail", "Dressed to Kill", "Rainbow", "Balloonicorn", "Sweet Dreams", "Mister Cuddles", "Blue Mew", "Shot to Hell", "Torqued to Hell", "Stabbed to Hell", "Brain Candy", "Flower Power", "Killer Bee", "Warhawk", "Red Bear", "Butcher Bird", "Airwolf", "Blitzkrieg", "Corsair", "Anodized Aloha", "Bamboo Brushed", "Croc Dusted", "Leopard Printed", "Macaw Masked", "Mannana Peeled", "Park Pigmented", "Piña Polished", "Sax Waxed", "Tiger Buffed", "Yeti Coated", "Bank Rolled", "Bloom Buffed", "Bonk Varnished", "Cardboard Boxed", "Clover Camo'd", "Dream Piped", "Fire Glazed", "Freedom Wrapped", "Kill Covered", "Merc Stained", "Pizza Polished", "Quack Canvassed", "Star Crossed", "Carpet Bomber Mk.II", "Woodland Warrior Mk.II", "Wrapped Reviver Mk.II", "Forest Fire Mk.II", "Night Owl Mk.II", "Woodsy Widowmaker Mk.II", "Autumn Mk.II", "Plaid Potshotter Mk.II", "Civic Duty Mk.II", "Civil Servant Mk.II", "Dead Reckoner Mk.II", "Bovine Blazemaker Mk.II", "Backwoods Boomstick Mk.II", "Masked Mender Mk.II", "Macabre Web Mk.II", "Iron Wood Mk.II", "Nutcracker Mk.II", "Smalltown Bringdown Mk.II", "Dragon Slayer", "Smissmas Sweater", "Miami Element", "Jazzy", "Mosaic", "Cosmic Calamity", "Hana", "Uranium", "Neo Tokyo", "Hazard Warning", "Damascus & Mahogany", "Dovetailed", "Alien Tech", "Cabin Fevered", "Polar Surprise", "Bomber Soul", "Geometrical Teams"];
+let skinnames = ["Bovine Blazemaker", "War Room", "Treadplate Tormenter", "Bogtrotter", "Earth, Sky and Fire", "Team Sprayer", "Spruce Deuce", "Hickory Hole-Puncher", "Rooftop Wrangler", "Civic Duty", "Civil Servant", "Local Hero", "Mayor", "Smalltown Bringdown", "Citizen Pain", "Tartan Torpedo", "Lumber From Down Under", "Rustic Ruiner", "Barn Burner", "Homemade Heater", "Plaid Potshotter", "Country Crusher", "Iron Wood", "Shot in the Dark", "Blasted Bombardier", "Backcountry Blaster", "Antique Annihilator", "Old Country", "American Pastoral", "Reclaimed Reanimator", "Red Rock Roscoe", "Sand Cannon", "Sudden Flurry", "Psychedelic Slugger", "Purple Range", "Night Terror", "Carpet Bomber", "Woodland Warrior", "Wrapped Reviver", "Forest Fire", "Night Owl", "Woodsy Widowmaker", "Backwoods Boomstick", "King of the Jungle", "Masked Mender", "Thunderbolt", "Liquid Asset", "Shell Shocker", "Current Event", "Pink Elephant", "Flash Fryer", "Spark of Life", "Dead Reckoner", "Black Dahlia", "Sandstone Special", "Lightning Rod", "Brick House", "Aqua Marine", "Low Profile", "Turbine Torcher", "Boneyard", "Pumpkin Patch", "Macabre Web", "Autumn", "Nutcracker", "Wildwood", "Top Shelf", "High Roller's", "Coffin Nail", "Dressed to Kill", "Rainbow", "Balloonicorn", "Sweet Dreams", "Mister Cuddles", "Blue Mew", "Shot to Hell", "Torqued to Hell", "Stabbed to Hell", "Brain Candy", "Flower Power", "Killer Bee", "Warhawk", "Red Bear", "Butcher Bird", "Airwolf", "Blitzkrieg", "Corsair", "Anodized Aloha", "Bamboo Brushed", "Croc Dusted", "Leopard Printed", "Macaw Masked", "Mannana Peeled", "Park Pigmented", "Piña Polished", "Sax Waxed", "Tiger Buffed", "Yeti Coated", "Bank Rolled", "Bloom Buffed", "Bonk Varnished", "Cardboard Boxed", "Clover Camo'd", "Dream Piped", "Fire Glazed", "Freedom Wrapped", "Kill Covered", "Merc Stained", "Pizza Polished", "Quack Canvassed", "Star Crossed", "Carpet Bomber Mk.II", "Woodland Warrior Mk.II", "Wrapped Reviver Mk.II", "Forest Fire Mk.II", "Night Owl Mk.II", "Woodsy Widowmaker Mk.II", "Autumn Mk.II", "Plaid Potshotter Mk.II", "Civic Duty Mk.II", "Civil Servant Mk.II", "Dead Reckoner Mk.II", "Bovine Blazemaker Mk.II", "Backwoods Boomstick Mk.II", "Masked Mender Mk.II", "Macabre Web Mk.II", "Iron Wood Mk.II", "Nutcracker Mk.II", "Smalltown Bringdown Mk.II", "Dragon Slayer", "Smissmas Sweater", "Miami Element", "Jazzy", "Mosaic", "Cosmic Calamity", "Hana", "Uranium", "Neo Tokyo", "Hazard Warning", "Damascus & Mahogany", "Dovetailed", "Alien Tech", "Cabin Fevered", "Polar Surprise", "Bomber Soul", "Geometrical Teams", "Horror Holiday", "Spectral Shimmered", "Haunted Ghosts", "Totally Boned", "Spirit of Halloween", "Calavera Canvas", "Skull Study", "Ghost Town", "Tumor Toasted", "Electroshocked"];
 let svariants = [];
 
 //Skin Name Autocomplete
