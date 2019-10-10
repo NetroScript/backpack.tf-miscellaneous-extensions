@@ -5,6 +5,7 @@ Currently included is:
 * In inventories add a Sort by paint
 * In inventories add a Sort by spell
 * In inventories add a Sort by level
+* In inventories add a Sort by scm
 * Allow the reversion of the groups from a sort
 * Filter by class on backpack.tf/effect/<effect>
 * For unusuals you can not only filter for class but now also filter for miscs
@@ -16,13 +17,17 @@ Currently included is:
 ## Installation
 _____________________________________________
 Use an extension which can execute userscripts (F.e. [Tampermonkey](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo) for [Chrome](https://www.google.com/chrome/) or [Greasemonkey](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/)  for [Firefox](https://www.mozilla.org/firefox))
-and then install using this link: [backpack.tf extended sorting.user.js](https://github.com/NetroScript/backpack.tf-miscellaneous-extensions/raw/master/backpack.tf%20extended%20sorting.user.js).
+and then install using this link: [backpack.tf extended sorting.user.js](https://github.com/ZeusJunior/backpack.tf-miscellaneous-extensions/raw/master/backpack.tf%20extended%20sorting.user.js).
 
 (Or paste / install it manually for your plugin)
 
 ## Changelog
 _____________________________________________
 
+#### 0.1.15
+
+Added:
+* Added SCM sort as per [this request](https://forums.backpack.tf/topic/72759-item-value-change-indicator/)
 
 #### 0.1.14
 
