@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         backpack.tf - Miscellaneous Extensions
-// @description  Adds more options for sorting items in backpacks (currently Sorting for paints, spells, levels) and other stuff which I would have liked
-// @version      0.1.14
+// @description  Adds more options for sorting items in backpacks (currently Sorting for paints, spells, levels, scm) and other stuff which I would have liked
+// @version      0.1.15
 // @author       Netroscript
 // @namespace    https://github.com/NetroScript
 // @include      /^https?:\/\/backpack\.tf\/.*
@@ -631,7 +631,10 @@ class</a></li>
       ],
       [
         "Group by level", "level", sortByLevel
-      ]
+      ],
+      [
+        "Group by scm", "scm", sortBySCM
+      ],
     ];
 
     function sortByPaint() {
@@ -953,6 +956,60 @@ class</a></li>
 
 
     }
+
+function sortBySCM() {
+	let scm = {};
+	scm["SCM"] = {
+		"cc": ["#DD5522"],
+		"refprice": 0,
+		"items": []
+	  };
+
+	scm["Not SCM"] = {
+	  "cc": ["#676780"],
+	  "refprice": 0,
+	  "items": []
+	};
+
+	scm["Hidden Items"] = {
+	  "cc": ["#676780"],
+	  "refprice": 0
+	};
+
+	let z = $('.backpack-page .item:not(.spacer)');
+
+	scm["Hidden Items"]["items"] = $('.temp-page .item:not(.spacer)');
+
+	for (let p = 0; p < z.length; p++) {
+	  if ($(z[p]).attr("data-p_bptf") == undefined) {
+		/*let level = "Level " + $(z[p]).attr("data-level");
+		if (!l.hasOwnProperty(level)) {
+		  scm[level] = {
+			"cc": ["#676780"],
+			"refprice": 0,
+			"items": []
+		  };
+		}*/
+		scm['SCM']["items"].push($(z[p])[0]);
+	  } else {
+		scm["Not SCM"]["items"].push($(z[p])[0]);
+	  }
+
+	}
+
+	for (let k in scm) {
+	  scm[k]["items"] = genericItemSort("data-price", scm[k]["items"]);
+
+	}
+
+	genericSort(scm, "scm", true, {
+	  "use": true,
+	  "funct": function(a, b) {
+		return parseInt(a[0].split(" ")[1]) - parseInt(b[0].split(" ")[1]);
+	  }
+	});
+
+  }
 
     //Stop reverse sorting when another sort was clicked on before
     $(".dropdown-menu.dropdown-menu-right.pull-right li:not([id^='custom'])").click(function(e) {
