@@ -5,9 +5,10 @@ Currently included is:
 * In inventories add a Sort by paint
 * In inventories add a Sort by spell
 * In inventories add a Sort by level
+* In inventories add a Sort by Classifieds (shows you all the listed items)
 * Allow the reversion of the groups from a sort
 * Filter by class on backpack.tf/effect/<effect>
-* For unusuals you can not only filter for class but now also filter for miscs
+* For unusuals you can not only filter for class but now also filter for miscs (manually curated list, if you want more open an issue)
 * When building a search for classifieds or premium you now can autocomplete skin names
 * Marketplace link for any item
 
