@@ -1,14 +1,16 @@
 // ==UserScript==
 // @name         backpack.tf - Miscellaneous Extensions
 // @description  Adds more options for sorting items in backpacks (currently Sorting for paints, spells, levels, scm) and other stuff which I would have liked
-// @version      0.1.15
-// @author       Netroscript
-// @namespace    https://github.com/NetroScript
+// @version      0.1.16
+// @author       Zeus_Junior
+// @namespace    https://steamcommunity.com/profiles/76561198144346135
 // @include      /^https?:\/\/backpack\.tf\/.*
-// @downloadURL https://github.com/NetroScript/backpack.tf-miscellaneous-extensions/raw/master/backpack.tf%20extended%20sorting.user.js
-// @updateURL   https://github.com/NetroScript/backpack.tf-miscellaneous-extensions/raw/master/backpack.tf%20extended%20sorting.meta.js
+// @downloadURL  https://github.com/ZeusJunior/backpack.tf-miscellaneous-extensions/raw/master/backpack.tf%20extended%20sorting.user.js
+// @updateURL	 https://github.com/ZeusJunior/backpack.tf-miscellaneous-extensions/raw/master/backpack.tf%20extended%20sorting.user.js
 // @grant        none
 // @run-at       document-end
+// Original author https://github.com/NetroScript/backpack.tf-miscellaneous-extensions
+// I added SCM sorting
 // ==/UserScript==
 
 (function() {
@@ -981,15 +983,7 @@ function sortBySCM() {
 	scm["Hidden Items"]["items"] = $('.temp-page .item:not(.spacer)');
 
 	for (let p = 0; p < z.length; p++) {
-	  if ($(z[p]).attr("data-p_bptf") == undefined) {
-		/*let level = "Level " + $(z[p]).attr("data-level");
-		if (!l.hasOwnProperty(level)) {
-		  scm[level] = {
-			"cc": ["#676780"],
-			"refprice": 0,
-			"items": []
-		  };
-		}*/
+	  if ($(z[p]).attr("data-p_scm")) {
 		scm['SCM']["items"].push($(z[p])[0]);
 	  } else {
 		scm["Not SCM"]["items"].push($(z[p])[0]);

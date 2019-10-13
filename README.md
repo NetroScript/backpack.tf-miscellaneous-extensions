@@ -24,6 +24,11 @@ and then install using this link: [backpack.tf extended sorting.user.js](https:/
 ## Changelog
 _____________________________________________
 
+#### 0.1.16
+
+Fixed:
+* Fixed some items not showing in the SCM list
+
 #### 0.1.15
 
 Added:
