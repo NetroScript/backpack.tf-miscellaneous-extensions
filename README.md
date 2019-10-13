@@ -24,6 +24,14 @@ and then install using this link: [backpack.tf extended sorting.user.js](https:/
 _____________________________________________
 
 
+#### 0.1.15
+
+Added:
+* Group by Classifieds
+
+Improved:
+* Formatting (and changed to tab indentation)
+
 #### 0.1.14
 
 Added:
