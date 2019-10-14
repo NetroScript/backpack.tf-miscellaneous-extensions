@@ -788,53 +788,51 @@ class</a></li>
 
 
     }
-    
-    function sortBySCM() {
-      let scm = {};
-      scm["SCM"] = {
-        "cc": ["#DD5522"],
-        "refprice": 0,
-        "items": []
-        };
-    
-      scm["Not SCM"] = {
-        "cc": ["#676780"],
-        "refprice": 0,
-        "items": []
-      };
-    
-      scm["Hidden Items"] = {
-        "cc": ["#676780"],
-        "refprice": 0
-      };
-    
-      let z = $('.backpack-page .item:not(.spacer)');
-    
-      scm["Hidden Items"]["items"] = $('.temp-page .item:not(.spacer)');
-    
-      for (let p = 0; p < z.length; p++) {
-        if ($(z[p]).attr("data-p_scm")) {
-        scm['SCM']["items"].push($(z[p])[0]);
-        } else {
-        scm["Not SCM"]["items"].push($(z[p])[0]);
-        }
-    
-      }
-    
-      for (let k in scm) {
-        scm[k]["items"] = genericItemSort("data-price", scm[k]["items"]);
-    
-      }
-    
-      genericSort(scm, "scm", true, {
-        "use": true,
-        "funct": function(a, b) {
-        return parseInt(a[0].split(" ")[1]) - parseInt(b[0].split(" ")[1]);
-        }
-      });
-    
-    }
 
+		function sortBySCM() {
+			let scm = {};
+			scm["SCM"] = {
+				"cc": ["#DD5522"],
+				"refprice": 0,
+				"items": []
+			};
+			
+			scm["Not SCM"] = {
+				"cc": ["#676780"],
+				"refprice": 0,
+				"items": []
+			};
+			
+			scm["Hidden Items"] = {
+				"cc": ["#676780"],
+				"refprice": 0
+			};
+			
+			let z = $('.backpack-page .item:not(.spacer)');
+			
+			scm["Hidden Items"]["items"] = $('.temp-page .item:not(.spacer)');
+			
+			for (let p = 0; p < z.length; p++) {
+				if ($(z[p]).attr("data-p_scm")) {
+					scm['SCM']["items"].push($(z[p])[0]);
+				} else {
+					scm["Not SCM"]["items"].push($(z[p])[0]);
+				}
+			
+			  }
+			
+			for (let k in scm) {
+				scm[k]["items"] = genericItemSort("data-price", scm[k]["items"]);
+			}
+			
+			genericSort(scm, "scm", true, {
+				"use": true,
+				"funct": function(a, b) {
+				return parseInt(a[0].split(" ")[1]) - parseInt(b[0].split(" ")[1]);
+				}
+			});
+		
+		}
 
 		function sortByClassifiedListing() {
 			let c = {
