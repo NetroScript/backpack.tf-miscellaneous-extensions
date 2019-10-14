@@ -5,34 +5,45 @@ Currently included is:
 * In inventories add a Sort by paint
 * In inventories add a Sort by spell
 * In inventories add a Sort by level
-* In inventories add a Sort by scm
+* In inventories add a Sort by scm price
+* In inventories add a Sort by Classifieds (shows you all the listed items)
 * Allow the reversion of the groups from a sort
 * Filter by class on backpack.tf/effect/<effect>
-* For unusuals you can not only filter for class but now also filter for miscs
+* For unusuals you can not only filter for class but now also filter for miscs (manually curated list, if you want more open an issue)
 * When building a search for classifieds or premium you now can autocomplete skin names
 * Marketplace link for any item
+* Spells are highlighted in inventories (green dotted lower border for 1 spell, red for multiple spells)
 
 
 
 ## Installation
 _____________________________________________
 Use an extension which can execute userscripts (F.e. [Tampermonkey](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo) for [Chrome](https://www.google.com/chrome/) or [Greasemonkey](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/)  for [Firefox](https://www.mozilla.org/firefox))
-and then install using this link: [backpack.tf extended sorting.user.js](https://github.com/ZeusJunior/backpack.tf-miscellaneous-extensions/raw/master/backpack.tf%20extended%20sorting.user.js).
+and then install using this link: [backpack.tf extended sorting.user.js](https://github.com/NetroScript/backpack.tf-miscellaneous-extensions/raw/master/backpack.tf%20extended%20sorting.user.js).
 
 (Or paste / install it manually for your plugin)
 
 ## Changelog
 _____________________________________________
 
+
+#### 0.1.17
+
+Added:
+* Added sorting by scm price in inventory
+
 #### 0.1.16
 
-Fixed:
-* Fixed some items not showing in the SCM list
+Improved:
+* Highlighting spells works now in more places (added: classifieds and compare links)
 
 #### 0.1.15
 
 Added:
-* Added SCM sort as per [this request](https://forums.backpack.tf/topic/72759-item-value-change-indicator/)
+* Group by Classifieds
+
+Improved:
+* Formatting (and changed to tab indentation)
 
 #### 0.1.14
 
@@ -158,6 +169,11 @@ Spell sorting (green dots mean a single spell, red dots mean multi spell):
 
 Level sorting:
 ![Preview](https://raw.githubusercontent.com/NetroScript/backpack.tf-miscellaneous-extensions/master/preview3.png)
+
+
+
+SCM sorting:
+![Preview](https://raw.githubusercontent.com/NetroScript/backpack.tf-miscellaneous-extensions/master/preview5.png)
 
 
 
