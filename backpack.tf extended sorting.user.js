@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         backpack.tf - Miscellaneous Extensions
 // @description  Adds more options for sorting items in backpacks (currently Sorting for paints, spells, levels, classified listings) and other stuff which I would have liked (including highlighting spells, autocompleting spell names or sorting unusuals by class)
-// @version      0.1.15
+// @version      0.1.16
 // @author       Netroscript
 // @namespace    https://github.com/NetroScript
 // @include      /^https?:\/\/backpack\.tf\/.*
@@ -970,6 +970,27 @@ class</a></li>
 			});
 			return out;
 		}
+        
+		// Code to mark spells in the compare link too
+		let compare_observer = undefined;
+		let modal_observer = new MutationObserver(()=>{
+			if($("#active-modal").find(".modal-title").text() == "Compare inventories"){
+				compare_observer = new MutationObserver(()=>{
+					markSpells()
+				});
+				compare_observer.observe($("#inventory-cmp-bins")[0], {"childList": true});
+			} else {
+				if(compare_observer != undefined){
+					compare_observer.disconnect();
+					compare_observer = undefined;
+				}
+			}
+		})
+		modal_observer.observe($("#page-content")[0], {"childList": true, "attributes": false, "characterData": false, "subtree": false})
+	}
+
+	if (window.location.pathname.startsWith("/classifieds")) {
+		markSpells()
 	}
 
 	function markSpells() {

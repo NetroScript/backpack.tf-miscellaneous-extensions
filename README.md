@@ -11,6 +11,7 @@ Currently included is:
 * For unusuals you can not only filter for class but now also filter for miscs (manually curated list, if you want more open an issue)
 * When building a search for classifieds or premium you now can autocomplete skin names
 * Marketplace link for any item
+* Spells are highlighted in inventories (green dotted lower border for 1 spell, red for multiple spells)
 
 
 
@@ -24,6 +25,11 @@ and then install using this link: [backpack.tf extended sorting.user.js](https:/
 ## Changelog
 _____________________________________________
 
+
+#### 0.1.16
+
+Improved:
+* Highlighting spells works now in more places (added: classifieds and compare links)
 
 #### 0.1.15
 
