@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         backpack.tf - Miscellaneous Extensions
 // @description  Adds more options for sorting items in backpacks (currently Sorting for paints, spells, levels, scm price, classified listings) and other stuff which I would have liked (including highlighting spells, autocompleting spell names or sorting unusuals by class)
-// @version      0.1.18
+// @version      0.1.19
 // @author       Netroscript
 // @namespace    https://github.com/NetroScript
 // @include      /^https?:\/\/backpack\.tf\/.*
@@ -52,163 +52,105 @@
 
 	var colors = {
 		"A Color Similar to Slate": {
-			"cc": ["#2F4F4F"],
-			"price": "12.11 ref",
-			"refprice": 12.11
+			"cc": ["#2F4F4F"]
 		},
 		"A Deep Commitment to Purple": {
-			"cc": ["#7D4071"],
-			"price": "13.44–14 ref",
-			"refprice": 13.77
+			"cc": ["#7D4071"]
 		},
 		"A Distinctive Lack of Hue": {
-			"cc": ["#141414"],
-			"price": "1.75 keys",
-			"refprice": 51.44
+			"cc": ["#141414"]
 		},
 		"A Mann's Mint": {
-			"cc": ["#BCDDB3"],
-			"price": "19 ref",
-			"refprice": 20
+			"cc": ["#BCDDB3"]
 		},
 		"After Eight": {
-			"cc": ["#2D2D24"],
-			"price": "22 ref",
-			"refprice": 23
+			"cc": ["#2D2D24"]
 		},
 		"Aged Moustache Grey": {
-			"cc": ["#7E7E7E"],
-			"price": "7.55 ref",
-			"refprice": 7.55
+			"cc": ["#7E7E7E"]
 		},
 		"An Extraordinary Abundance of Tinge": {
-			"cc": ["#E6E6E6"],
-			"price": "1.85 keys",
-			"refprice": 54.33
+			"cc": ["#E6E6E6"]
 		},
 		"Australium Gold": {
-			"cc": ["#E7B53B"],
-			"price": "14.33–15 ref",
-			"refprice": 14.66
+			"cc": ["#E7B53B"]
 		},
 		"Color No. 216-190-216": {
-			"cc": ["#D8BED8"],
-			"price": "8.66 ref",
-			"refprice": 8.66
+			"cc": ["#D8BED8"]
 		},
 		"Dark Salmon Injustice": {
-			"cc": ["#E9967A"],
-			"price": "10.55 ref",
-			"refprice": 10.55
+			"cc": ["#E9967A"]
 		},
 		"Drably Olive": {
-			"cc": ["#808000"],
-			"price": "8.33 ref",
-			"refprice": 8.33
+			"cc": ["#808000"]
 		},
 		"Indubitably Green": {
-			"cc": ["#729E42"],
-			"price": "11.11–13.55 ref",
-			"refprice": 12.33
+			"cc": ["#729E42"]
 		},
 		"Mann Co. Orange": {
-			"cc": ["#CF7336"],
-			"price": "9.33 ref",
-			"refprice": 9.33
+			"cc": ["#CF7336"]
 		},
 		"Muskelmannbraun": {
-			"cc": ["#A57545"],
-			"price": "2.55 ref",
-			"refprice": 2.55
+			"cc": ["#A57545"]
 		},
 		"Noble Hatter's Violet": {
-			"cc": ["#51384A"],
-			"price": "7.55 ref",
-			"refprice": 7.55
+			"cc": ["#51384A"]
 		},
 		"Peculiarly Drab Tincture": {
-			"cc": ["#C5AF91"],
-			"price": "3.88 ref",
-			"refprice": 3.88
+			"cc": ["#C5AF91"]
 		},
 		"Pink as Hell": {
-			"cc": ["#FF69B4"],
-			"price": "1.5 keys",
-			"refprice": 44.11
+			"cc": ["#FF69B4"]
 		},
 		"Radigan Conagher Brown": {
-			"cc": ["#694D3A"],
-			"price": "4.55 ref",
-			"refprice": 4.55
+			"cc": ["#694D3A"]
 		},
 		"The Bitter Taste of Defeat and Lime": {
-			"cc": ["#32CD32"],
-			"price": "1.05–1.4 keys",
-			"refprice": 37
+			"cc": ["#32CD32"]
 		},
 		"The Color of a Gentlemann's Business Pants": {
-			"cc": ["#F0E68C"],
-			"price": "9.66–10.33 ref",
-			"refprice": 11
+			"cc": ["#F0E68C"]
 		},
 		"Ye Olde Rustic Colour": {
-			"cc": ["#7C6C57"],
-			"price": "2.22–2.44 ref",
-			"refprice": 2.33
+			"cc": ["#7C6C57"]
 		},
 		"Zepheniah's Greed": {
-			"cc": ["#424F3B"],
-			"price": "5.66–6.33 ref",
-			"refprice": 7
+			"cc": ["#424F3B"]
 		},
 		"An Air of Debonair": {
 			"cc": [
 				"#654740", "#28394D"
-			],
-			"price": "13 ref",
-			"refprice": 14
+			]
 		},
 		"Balaclavas Are Forever": {
 			"cc": [
 				"#3B1F23", "#18233D"
-			],
-			"price": "12.66 ref",
-			"refprice": 12.66
+			]
 		},
 		"Cream Spirit": {
 			"cc": [
 				"#C36C2D", "#B88035"
-			],
-			"price": "13 ref",
-			"refprice": 14
+			]
 		},
 		"Operator's Overalls": {
 			"cc": [
 				"#483838", "#384248"
-			],
-			"price": "9.44 ref",
-			"refprice": 9.44
+			]
 		},
 		"Team Spirit": {
 			"cc": [
 				"#B8383B", "#5885A2"
-			],
-			"price": "27 ref",
-			"refprice": 28
+			]
 		},
 		"The Value of Teamwork": {
 			"cc": [
 				"#803020", "#256D8D"
-			],
-			"price": "24.33–24.88 ref",
-			"refprice": 24.55
+			]
 		},
 		"Waterlogged Lab Coat": {
 			"cc": [
 				"#A89A8C", "#839FA3"
-			],
-			"price": "10.55 ref",
-			"refprice": 10.55
+			]
 		}
 	};
 
@@ -216,132 +158,103 @@
 		"Halloween Spell: Team Spirit Footprints": {
 			"cc": [
 				"#B8383B", "#5885A2"
-			],
-			"refprice": 50
+			]
 		},
 		"Halloween Spell: Gangreen Footprints": {
-			"cc": ["#79c46b"],
-			"refprice": 49
+			"cc": ["#79c46b"]
 		},
 		"Halloween Spell: Corpse Gray Footprints": {
-			"cc": ["#8e9f9d"],
-			"refprice": 48
+			"cc": ["#8e9f9d"]
 		},
 		"Halloween Spell: Violent Violet Footprints": {
-			"cc": ["#f7b4fe"],
-			"refprice": 47
+			"cc": ["#f7b4fe"]
 		},
 		"Halloween Spell: Rotten Orange Footprints": {
-			"cc": ["#CF7336"],
-			"refprice": 46
+			"cc": ["#CF7336"]
 		},
 		"Halloween Spell: Bruised Purple Footprints": {
-			"cc": ["#7D4071"],
-			"refprice": 45
+			"cc": ["#7D4071"]
 		},
 		"Halloween Spell: Headless Horseshoes": {
-			"cc": ["#ba76ff"],
-			"refprice": 44
+			"cc": ["#ba76ff"]
 		}, //Paint changing
 		"Halloween Spell: Die Job": {
 			"cc": [
 				"#E7B53B", "#8586ff"
-			],
-			"refprice": 43
+			]
 		},
 		"Halloween Spell: Spectral Spectrum": {
 			"cc": [
 				"#B8383B", "#5885A2"
-			],
-			"refprice": 42
+			]
 		},
 		"Halloween Spell: Putrescent Pigmentation": {
 			"cc": [
 				"#79c46b", "#67B037"
-			],
-			"refprice": 41
+			]
 		},
 		"Halloween Spell: Sinister Staining": {
 			"cc": [
 				"#F2EF46", "#808000"
-			],
-			"refprice": 40
+			]
 		},
 		"Halloween Spell: Chromatic Corruption": {
 			"cc": [
 				"#DB42BD", "#7D4071"
-			],
-			"refprice": 39
+			]
 		}, //Voice Changing
 		"Halloween Spell: Voices From Below": { //this is not the official spell name but it seems the single spell names get merged into it
-			"cc": ["#D11959"],
-			"refprice": 37
+			"cc": ["#D11959"]
 		},
 		"Halloween Spell: Scout's Spectral Snarl": {
-			"cc": ["#acfd9e"],
-			"refprice": 37
+			"cc": ["#acfd9e"]
 		},
 		"Halloween Spell: Soldier's Booming Bark": {
-			"cc": ["#f48280"],
-			"refprice": 37
+			"cc": ["#f48280"]
 		},
 		"Halloween Spell: Pyro's Muffled Moan": {
-			"cc": ["#f8bbfe"],
-			"refprice": 37
+			"cc": ["#f8bbfe"]
 		},
 		"Halloween Spell: Demoman's Cadaverous Croak": {
-			"cc": ["#90fdfd"],
-			"refprice": 36
+			"cc": ["#90fdfd"]
 		},
 		"Halloween Spell: Heavy's Bottomless Bass": {
-			"cc": ["#f57eff"],
-			"refprice": 35
+			"cc": ["#f57eff"]
 		},
 		"Halloween Spell: Engineers's Gravelly Growl": {
-			"cc": ["#fcfd95"],
-			"refprice": 34
+			"cc": ["#fcfd95"]
 		},
 		"Halloween Spell: Medic's Blood-curdling Bellow": {
-			"cc": ["#f7b786"],
-			"refprice": 33
+			"cc": ["#f7b786"]
 		},
 		"Halloween Spell: Sniper's Deep Downunder Drawl": {
-			"cc": ["#7c7cff"],
-			"refprice": 32
+			"cc": ["#7c7cff"]
 		},
 		"Halloween Spell: Spy's Creepy Croon": {
-			"cc": ["#e5e5e5"],
-			"refprice": 31
+			"cc": ["#e5e5e5"]
 		}, // Weapon changing
 		"Halloween Spell: Pumpkin Bombs": { //this is not the official spell name but it seems the single spell names get merged into it
-			"cc": ["#68167d"],
-			"refprice": 37
+			"cc": ["#68167d"]
 		},
 		"Halloween Spell: Exorcism": {
 			"cc": [
 				"#B8383B", "#5885A2"
-			],
-			"refprice": 38
+			]
 		},
 		"Halloween Spell: Squash Rockets": {
-			"cc": ["#dc93ff"],
-			"refprice": 38
+			"cc": ["#dc93ff"]
 		},
 		"Halloween Spell: Spectral Flame": {
-			"cc": ["#5faf53"],
-			"refprice": 38
+			"cc": ["#5faf53"]
 		},
 		"Halloween Spell: Sentry Quad-Pumpkins": {
-			"cc": ["#8b8ce9"],
-			"refprice": 38
+			"cc": ["#8b8ce9"]
 		},
 		"Halloween Spell: Gourd Grenades": {
-			"cc": ["#f8bb8c"],
-			"refprice": 38
+			"cc": ["#f8bb8c"]
 		},
 		"Halloween Spell: Halloween Fire": {
-			"cc": ["#4ef442"],
-			"refprice": 38
+			"cc": ["#4ef442"]
 		}
 	};
 
@@ -566,6 +479,17 @@ class</a></li>
 		}
 		//##############################################################################
 
+		// Add a trade offer link to every profile possible
+
+		let trade_link = $(".user-link").attr("data-offers-params");
+
+		if(trade_link != undefined){
+			$(".profile .information .buttons").append(`<a class="btn btn-primary btn-xs" href="https://steamcommunity.com/tradeoffer/new/${trade_link}" target="_blank">
+			<i class="stm stm-steam"></i> Open trade offer</a>`);
+		}
+
+		//##############################################################################
+
 		// Get the keyprice for later use
 		let matched_keyprice = $("meta[name=description]").attr("content").match(/value of ([0-9,.]+) ref, ([0-9,.]+) keys/);
 		let keyprice = parseFloat(matched_keyprice[1].replace(/,/g, "")) / parseFloat(matched_keyprice[2].replace(/,/g, ""));
@@ -602,14 +526,10 @@ class</a></li>
 		function sortByPaint() {
 			let paints = colors;
 			paints["Not Painted"] = {
-				"cc": ["#676780"],
-				"price": "No Paint Price",
-				"refprice": 0
+				"cc": ["#676780"]
 			};
 			paints["Hidden Items"] = {
-				"cc": ["#676780"],
-				"price": "No Paint Price",
-				"refprice": 0
+				"cc": ["#676780"]
 			};
 
 			for (let k in paints) {
@@ -640,13 +560,10 @@ class</a></li>
 		function sortBySpell() {
 			let s = spells;
 			s["No Spell"] = {
-				"cc": ["#676780"],
-				"price": "No Spell Price",
-				"refprice": 0
+				"cc": ["#676780"]
 			};
 			s["Hidden Items"] = {
-				"cc": ["#676780"],
-				"refprice": 0
+				"cc": ["#676780"]
 			};
 
 			for (let k in s) {
@@ -677,18 +594,15 @@ class</a></li>
 			let l = {};
 			l["No Level"] = {
 				"cc": ["#676780"],
-				"refprice": 0,
 				"items": []
 			};
 			//Add Special Colors to specific levels like this
 			l["Level 0"] = {
 				"cc": ["#DD5522"],
-				"refprice": 0,
 				"items": []
 			};
 			l["Hidden Items"] = {
-				"cc": ["#676780"],
-				"refprice": 0
+				"cc": ["#676780"]
 			};
 
 			let z = $(".backpack-page .item:not(.spacer)");
@@ -701,7 +615,6 @@ class</a></li>
 					if (!l.hasOwnProperty(level)) {
 						l[level] = {
 							"cc": ["#676780"],
-							"refprice": 0,
 							"items": []
 						};
 					}
@@ -729,17 +642,14 @@ class</a></li>
 			let d = {};
 			d["No Defindex"] = {
 				"cc": ["#676780"],
-				"refprice": 0,
 				"items": []
 			};
 			d["Items"] = {
 				"cc": ["#676780"],
-				"refprice": 0,
 				"items": []
 			};
 			d["Hidden Items"] = {
-				"cc": ["#676780"],
-				"refprice": 0
+				"cc": ["#676780"]
 			};
 
 			let z = $(".backpack-page .item:not(.spacer)");
@@ -757,7 +667,6 @@ class</a></li>
 						if (!d.hasOwnProperty(def)) {
 							d[def] = {
 								"cc": ["#676780"],
-								"refprice": 0,
 								"items": []
 							};
 						}
@@ -793,19 +702,16 @@ class</a></li>
 			let scm = {};
 			scm["SCM"] = {
 				"cc": ["#DD5522"],
-				"refprice": 0,
 				"items": []
 			};
 			
 			scm["Not SCM"] = {
 				"cc": ["#676780"],
-				"refprice": 0,
 				"items": []
 			};
 			
 			scm["Hidden Items"] = {
-				"cc": ["#676780"],
-				"refprice": 0
+				"cc": ["#676780"]
 			};
 			
 			let z = $('.backpack-page .item:not(.spacer)');
@@ -844,7 +750,6 @@ class</a></li>
 
 			for (let k in c) {
 				c[k]["items"] = [];
-				c[k]["refprice"] = 0;
 				c[k]["cc"] = ["#676780"];
 			}
 
@@ -913,7 +818,6 @@ class</a></li>
 			for (let k in o) {
 				a.push([
 					k, o[k]["cc"],
-					o[k]["refprice"],
 					o[k]["items"]
 				]);
 			}
@@ -921,7 +825,7 @@ class</a></li>
 			if (csort.use !== false) {
 
 				for (let i = 0; i < a.length; i++) {
-					if (a[i][3].length == 0) {
+					if (a[i][2].length == 0) {
 						a.splice(i, 1);
 						i--;
 					}
@@ -936,7 +840,7 @@ class</a></li>
 				lasttype = type;
 
 			for (let i = 0; i < a.length; i++) {
-				if (!hide || a[i][3].length != 0) {
+				if (!hide || a[i][2].length != 0) {
 					let textcolor = "color: " + idealTextColor(a[i][1][0]) + ";";
 					let bgcolor = (a[i][1].length == 1)
 						? "background-color: " + a[i][1][0] + ";"
@@ -948,8 +852,8 @@ class</a></li>
 						pagename: a[i][0]
 					}));
 
-					for (let r = 0; r < a[i][3].length; r++) {
-						$("#page" + i).parent().parent().find(".item-list").append(a[i][3][r]);
+					for (let r = 0; r < a[i][2].length; r++) {
+						$("#page" + i).parent().parent().find(".item-list").append(a[i][2][r]);
 					}
 				}
 			}

@@ -14,6 +14,7 @@ Currently included is:
 * Marketplace link for any item
 * Premium search for decorated weapons
 * Spells are highlighted in inventories (green dotted lower border for 1 spell, red for multiple spells)
+* If possible a trade offer link will be added to the profile links, so you can offer a trade even when the user has no listed item
 
 
 
@@ -26,6 +27,14 @@ and then install using this link: [backpack.tf extended sorting.user.js](https:/
 
 ## Changelog
 _____________________________________________
+
+#### 0.1.19
+
+Added:
+* Added trade offer link to every profile (where the trade offer link is known)
+
+Improved:
+* Cleared up the code a tiny bit
 
 #### 0.1.18
 
