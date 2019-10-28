@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         backpack.tf - Miscellaneous Extensions
 // @description  Adds more options for sorting items in backpacks (currently Sorting for paints, spells, levels, scm price, classified listings) and other stuff which I would have liked (including highlighting spells, autocompleting spell names or sorting unusuals by class)
-// @version      0.1.17
+// @version      0.1.18
 // @author       Netroscript
 // @namespace    https://github.com/NetroScript
 // @include      /^https?:\/\/backpack\.tf\/.*
@@ -1078,6 +1078,28 @@ class</a></li>
 		return query;
 	}
 
+	function genWeaponSearch(element) {
+        let query = "/premium/search?";
+        let item = $(element);
+        let name = item.attr('data-base_name');
+        let quality = item.attr('data-quality');
+        let elQuality = item.attr('data-quality_elevated') ? item.attr('data-quality_elevated') : '';
+        let killstreak = item.attr('data-ks_tier') ? item.attr('data-ks_tier') : 0;
+        let effect = item.attr('data-effect_id');
+        let skin = item.attr('data-paint_kit');
+
+        let skininfo = item.find(".item-icon").css("background-image").match(/warpaint\/[(?!_)\S]+_[0-9]+_[0-9]+_[0-9]+\.png/g);
+        let wear = skininfo[0].split("_")[2];
+		query += 'item=' + name + '&quality=' + quality + '&texture_name=' + skin + '&wear_tier=' + wear + '&killstreak_tier=' + killstreak;
+		if (effect) {
+			query += '&particle=' + effect;
+		}
+        if (elQuality) {
+            query += '&elevated=' + elQuality;
+		}
+        return query;
+    }
+
 	let skinnames = ["Bovine Blazemaker", "War Room", "Treadplate Tormenter", "Bogtrotter", "Earth, Sky and Fire", "Team Sprayer", "Spruce Deuce", "Hickory Hole-Puncher", "Rooftop Wrangler", "Civic Duty", "Civil Servant", "Local Hero", "Mayor", "Smalltown Bringdown", "Citizen Pain", "Tartan Torpedo", "Lumber From Down Under", "Rustic Ruiner", "Barn Burner", "Homemade Heater", "Plaid Potshotter", "Country Crusher", "Iron Wood", "Shot in the Dark", "Blasted Bombardier", "Backcountry Blaster", "Antique Annihilator", "Old Country", "American Pastoral", "Reclaimed Reanimator", "Red Rock Roscoe", "Sand Cannon", "Sudden Flurry", "Psychedelic Slugger", "Purple Range", "Night Terror", "Carpet Bomber", "Woodland Warrior", "Wrapped Reviver", "Forest Fire", "Night Owl", "Woodsy Widowmaker", "Backwoods Boomstick", "King of the Jungle", "Masked Mender", "Thunderbolt", "Liquid Asset", "Shell Shocker", "Current Event", "Pink Elephant", "Flash Fryer", "Spark of Life", "Dead Reckoner", "Black Dahlia", "Sandstone Special", "Lightning Rod", "Brick House", "Aqua Marine", "Low Profile", "Turbine Torcher", "Boneyard", "Pumpkin Patch", "Macabre Web", "Autumn", "Nutcracker", "Wildwood", "Top Shelf", "High Roller's", "Coffin Nail", "Dressed to Kill", "Rainbow", "Balloonicorn", "Sweet Dreams", "Mister Cuddles", "Blue Mew", "Shot to Hell", "Torqued to Hell", "Stabbed to Hell", "Brain Candy", "Flower Power", "Killer Bee", "Warhawk", "Red Bear", "Butcher Bird", "Airwolf", "Blitzkrieg", "Corsair", "Anodized Aloha", "Bamboo Brushed", "Croc Dusted", "Leopard Printed", "Macaw Masked", "Mannana Peeled", "Park Pigmented", "Piña Polished", "Sax Waxed", "Tiger Buffed", "Yeti Coated", "Bank Rolled", "Bloom Buffed", "Bonk Varnished", "Cardboard Boxed", "Clover Camo'd", "Dream Piped", "Fire Glazed", "Freedom Wrapped", "Kill Covered", "Merc Stained", "Pizza Polished", "Quack Canvassed", "Star Crossed", "Carpet Bomber Mk.II", "Woodland Warrior Mk.II", "Wrapped Reviver Mk.II", "Forest Fire Mk.II", "Night Owl Mk.II", "Woodsy Widowmaker Mk.II", "Autumn Mk.II", "Plaid Potshotter Mk.II", "Civic Duty Mk.II", "Civil Servant Mk.II", "Dead Reckoner Mk.II", "Bovine Blazemaker Mk.II", "Backwoods Boomstick Mk.II", "Masked Mender Mk.II", "Macabre Web Mk.II", "Iron Wood Mk.II", "Nutcracker Mk.II", "Smalltown Bringdown Mk.II", "Dragon Slayer", "Smissmas Sweater", "Miami Element", "Jazzy", "Mosaic", "Cosmic Calamity", "Hana", "Uranium", "Neo Tokyo", "Hazard Warning", "Damascus & Mahogany", "Dovetailed", "Alien Tech", "Cabin Fevered", "Polar Surprise", "Bomber Soul", "Geometrical Teams", "Horror Holiday", "Spectral Shimmered", "Haunted Ghosts", "Totally Boned", "Spirit of Halloween", "Calavera Canvas", "Skull Study", "Ghost Town", "Tumor Toasted", "Electroshocked"];
 	let svariants = [];
 
@@ -1130,6 +1152,9 @@ class</a></li>
 
 						if (popover.find("a[href^='https://marketplace.tf']").length !== 1 && popover.find(".cmpb").length < 1) {
 							popover.append("<a class=\"btn btn-default btn-xs cmpb\" href=\"" + genMP($(self)[0]) + "\" target=\"_blank\"><img src=\"/images/marketplace-small.png?v=2\" style='width: 13px;height: 13px;margin-top: -4px;'> Marketplace</a>");
+						}
+						if (popover.find("a[href^='/premium/search']").length !== 1 && $(self).attr('data-paint_kit')) {
+							popover.append("<a class=\"btn btn-default btn-xs\" href=\"" + genWeaponSearch($(self)[0]) + "\"><i class=\"fa fa-star\"></i>Skin Search</a>")
 						}
 
 						clearInterval(id2);
