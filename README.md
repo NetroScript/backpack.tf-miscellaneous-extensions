@@ -11,7 +11,9 @@ Currently included is:
 * Allow the reversion of the groups from a sort
 * Filter by class on backpack.tf/effect/<effect>
 * For unusuals you can not only filter for class but now also filter for miscs (manually curated list, if you want more open an issue)
-* When building a search for classifieds or premium you now can autocomplete skin names
+* Improve classifieds / premium search
+  * Autocomplete skin names
+  * Filter unusual effects
 * Marketplace link for any item
 * Premium search for decorated weapons
 * Spells are highlighted in inventories (green dotted lower border for 1 spell, red for multiple spells)
@@ -29,6 +31,12 @@ and then install using this link: [backpack.tf extended sorting.user.js](https:/
 ## Changelog
 
 _____________________________________________
+
+#### 0.1.21
+
+Added:
+
+* Added particle search in classifieds search
 
 #### 0.1.20
 

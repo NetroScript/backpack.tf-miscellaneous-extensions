@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         backpack.tf - Miscellaneous Extensions
-// @description  Adds more options for sorting items in backpacks (currently Sorting for paints, spells, levels, scm price, classified listings) and other stuff which I would have liked (including highlighting spells, autocompleting spell names or sorting unusuals by class)
-// @version      0.1.20
+// @description  Adds more options for sorting items in backpacks (currently Sorting for paints, spells, levels, scm price, classified listings) and other stuff which I would have liked (including highlighting spells, autocompleting spell names, autocompleting particle names or sorting unusuals by class)
+// @version      0.1.21
 // @author       Netroscript
 // @namespace    https://github.com/NetroScript
 // @include      /^https?:\/\/backpack\.tf\/.*
@@ -937,7 +937,7 @@ class</a></li>
 				}
 			}
 		});
-		modal_observer.observe($("#page-content")[0], {"childList": true, "attributes": false, "characterData": false, "subtree": false});
+		modal_observer.observe($("#page-content")[0], {"childList": true});
 	}
 
 	if (window.location.pathname.startsWith("/classifieds")) {
@@ -1082,6 +1082,45 @@ class</a></li>
 		setTimeout(function () {
 			clearInterval(id);
 		}, 750);
+	});
+
+	// Modify Search Modal
+	new MutationObserver(() => {
+
+		let searchModal = $(".modal-title:contains(Advanced Search), .modal-title:contains(Build Query)").parents("#active-modal");
+
+		// The Modal which opened is the search modal
+		if(searchModal.length > 0) {
+
+			// Filters are loaded later, so we need to listen to the onload of the filters
+			new MutationObserver((mutations) => {
+
+				// Check if Loading filters text gets removed
+				if(mutations.some(mutation => Array.from(mutation.removedNodes.entries()).some(node => $(node).text().includes("Loading filters...")))){
+					let particleEffectContainer = $("#panel-particle > div");
+
+					// Add search box
+					particleEffectContainer.prepend("<input class=\"form-control filter-text\" id=\"particle-filter\" data-key=\"item\" type=\"text\" placeholder=\"Filter for effects\" style=\"margin-bottom: 5px;\">");
+
+					// On search hide / unhide all the elements
+					$("#particle-filter").keyup(() => {
+						let filterWord = $("#particle-filter").val().toLowerCase();
+						let effects = particleEffectContainer.find(".btn-multi-filter");
+						effects.each(function() {
+							let el = $(this);
+							el.show();
+							if(!el.text().toLowerCase().includes(filterWord)){
+								el.hide();
+							}
+						});
+					});
+				}
+			}).observe($(searchModal).find(".modal-body")[0], {
+				childList: true,
+			});
+		}
+	}).observe($("main")[0], {
+		childList: true
 	});
 
 })();
