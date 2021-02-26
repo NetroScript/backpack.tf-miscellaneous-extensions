@@ -32,6 +32,17 @@ and then install using this link: [backpack.tf extended sorting.user.js](https:/
 
 _____________________________________________
 
+#### 0.1.22
+
+Added:
+
+* Double spell grouping
+* Choosing group by spells groups by colors then by footprints. Group by spell again to inverse. 
+
+Fixed:
+
+* Voices from Below sorting
+
 #### 0.1.21
 
 Added:
