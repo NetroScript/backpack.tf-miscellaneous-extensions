@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         backpack.tf - Miscellaneous Extensions
 // @description  Adds more options for sorting items in backpacks (currently Sorting for paints, spells, levels, scm price, classified listings) and other stuff which I would have liked (including highlighting spells, autocompleting spell names, autocompleting particle names or sorting unusuals by class)
-// @version      0.1.21
+// @version      0.1.22
 // @author       Netroscript
 // @namespace    https://github.com/NetroScript
 // @include      /^https?:\/\/backpack\.tf\/.*
@@ -13,6 +13,55 @@
 
 (function () {
 	"use strict";
+
+	const Voices = 'Halloween Spell: Voices from Below';
+	const DieJob = 'Halloween Spell: Die Job';
+	const Corruption = 'Halloween Spell: Chromatic Corruption';
+	const Pigmentation = 'Halloween Spell: Putrescent Pigmentation';
+	const Spectrum = 'Halloween Spell: Spectral Spectrum';
+	const Sinister = 'Halloween Spell: Sinister Staining';
+	const TeamSpirit = 'Halloween Spell: Team Spirit Footprints';
+	const Headless = 'Halloween Spell: Headless Horseshoes';
+	const CorpseGray = 'Halloween Spell: Corpse Gray Footprints';
+	const Violet = 'Halloween Spell: Violent Violet Footprints';
+	const Purple = 'Halloween Spell: Bruised Purple Footprints';
+	const Gangreen = 'Halloween Spell: Gangreen Footprints';
+	const Orange = 'Halloween Spell: Rotten Orange Footprints';
+	const Exorcism = 'Halloween Spell: Exorcism';
+
+	function isColor(spell) {
+		return [DieJob, Corruption, Pigmentation, Spectrum, Sinister].includes(spell);
+	}
+
+	function isFootprint(spell) {
+		return [TeamSpirit, Headless, CorpseGray, Violet, Purple, Gangreen, Orange].includes(spell);
+	}
+
+	function isExorcism(spell) {
+		return Exorcism === spell;
+	}
+
+	function isVoices(spell) {
+		return Voices === spell;
+	}
+
+	function normalize(spell1, spell2) {
+		const normal = [spell1, spell2];
+		const flip = [spell2, spell1];
+		const voices = isVoices(spell1) || isVoices(spell2);
+		const colored = isColor(spell1) || isColor(spell2);
+		const prints = isFootprint(spell1) || isFootprint(spell2);
+		if (colored && voices) {
+			return isColor(spell1) ? normal : flip;
+		} else if (prints && voices) {
+			return isFootprint(spell1) ? normal : flip;
+		} else if (prints && colored) {
+			return isColor(spell1) ? normal : flip;
+		} else {
+			return isExorcism(spell1) ? flip : normal;
+		}
+	}
+	const TRIM = 'Halloween Spell: '.length;
 
 	//###############Source: https://stackoverflow.com/a/15605648
 	String.prototype.fmt = function (hash) {
@@ -203,7 +252,7 @@
 				"#DB42BD", "#7D4071"
 			]
 		}, //Voice Changing
-		"Halloween Spell: Voices From Below": { //this is not the official spell name but it seems the single spell names get merged into it
+		"Halloween Spell: Voices from Below": { //this is not the official spell name but it seems the single spell names get merged into it
 			"cc": ["#D11959"]
 		},
 		"Halloween Spell: Scout's Spectral Snarl": {
@@ -557,7 +606,27 @@ class</a></li>
 
 		}
 
+		var spellNormalize = [
+			{
+				"n": function (a, b) {
+					return normalize(a, b);
+				},
+				"id": "s"
+			},
+			{
+				"n": function (a, b) {
+					let [s1, s2] = normalize(a, b)
+					return [s2, s1];
+				},
+				"id": "s2"
+			}
+		]
+
+		var activeSort = 0;
+
 		function sortBySpell() {
+			let n = spellNormalize[activeSort]["n"];
+			let id = spellNormalize[activeSort]["id"];
 			let s = spells;
 			s["No Spell"] = {
 				"cc": ["#676780"]
@@ -575,7 +644,16 @@ class</a></li>
 			s["Hidden Items"]["items"] = $(".temp-page .item:not(.spacer)");
 
 			for (let p = 0; p < z.length; p++) {
-				if (s.hasOwnProperty($(z[p]).attr("data-spell_1"))) {
+				let sk = Object.keys(s);
+				if ((s.hasOwnProperty($(z[p]).attr("data-spell_1"))) && (s.hasOwnProperty($(z[p]).attr("data-spell_2")))) {
+					let [s1, s2] = n($(z[p]).attr("data-spell_1"), $(z[p]).attr("data-spell_2"));
+					let spellName = `${s1} and ${s2.slice(TRIM)}`;
+					if(sk.includes(spellName)) {
+						s[spellName]["items"].push($(z[p])[0]);
+					} else {
+						s[spellName] = {"items": [$(z[p])[0]], "cc": [s[s1]["cc"][0], s[s2]["cc"][0]]};
+					}
+				} else if (s.hasOwnProperty($(z[p]).attr("data-spell_1"))) {
 					s[$(z[p]).attr("data-spell_1")]["items"].push($(z[p])[0]);
 				} else {
 					s["No Spell"]["items"].push($(z[p])[0]);
@@ -585,9 +663,24 @@ class</a></li>
 			for (let k in s) {
 				s[k]["items"] = genericItemSort("data-price", s[k]["items"]);
 			}
+			let ns = s["No Spell"];
+			delete s["No Spell"];
+			let hi = s["Hidden Items"];
+			delete s["Hidden Items"];
+			let reducer = function (obj, key) {
+				obj[key] = s[key];
+				return obj;
+			};
+			const ordered = Object.keys(s).sort().reduce(reducer, {});
+			ordered["No Spell"] = ns;
+			ordered["Hidden Items"] = hi;
 
-			genericSort(s, "s", true);
-
+			genericSort(ordered, id, true);
+			if (activeSort + 1 >= spellNormalize.length) {
+				activeSort = 0;
+			} else {
+				activeSort = activeSort + 1;
+			}
 		}
 
 		function sortByLevel() {
@@ -704,40 +797,40 @@ class</a></li>
 				"cc": ["#DD5522"],
 				"items": []
 			};
-			
+
 			scm["Not SCM"] = {
 				"cc": ["#676780"],
 				"items": []
 			};
-			
+
 			scm["Hidden Items"] = {
 				"cc": ["#676780"]
 			};
-			
+
 			let z = $(".backpack-page .item:not(.spacer)");
-			
+
 			scm["Hidden Items"]["items"] = $(".temp-page .item:not(.spacer)");
-			
+
 			for (let p = 0; p < z.length; p++) {
 				if ($(z[p]).attr("data-p_scm")) {
 					scm["SCM"]["items"].push($(z[p])[0]);
 				} else {
 					scm["Not SCM"]["items"].push($(z[p])[0]);
 				}
-			
+
 			}
-			
+
 			for (let k in scm) {
 				scm[k]["items"] = genericItemSort("data-price", scm[k]["items"]);
 			}
-			
+
 			genericSort(scm, "scm", true, {
 				"use": true,
 				"funct": function(a, b) {
 					return parseInt(a[0].split(" ")[1]) - parseInt(b[0].split(" ")[1]);
 				}
 			});
-		
+
 		}
 
 		function sortByClassifiedListing() {
@@ -921,7 +1014,7 @@ class</a></li>
 			});
 			return out;
 		}
-        
+
 		// Code to mark spells in the compare link too
 		let compare_observer = undefined;
 		let modal_observer = new MutationObserver(()=>{
@@ -973,7 +1066,7 @@ class</a></li>
 			}
 		}
 
-		
+
 
 		if (item.attr("data-quality_elevated") == "11")
 			query += ";strange";
