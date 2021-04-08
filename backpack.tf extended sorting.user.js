@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         backpack.tf - Miscellaneous Extensions
 // @description  Adds more options for sorting items in backpacks (currently Sorting for paints, spells, levels, scm price, classified listings) and other stuff which I would have liked (including highlighting spells, autocompleting spell names, autocompleting particle names or sorting unusuals by class)
-// @version      0.1.22
+// @version      0.1.23
 // @author       Netroscript
 // @namespace    https://github.com/NetroScript
 // @include      /^https?:\/\/backpack\.tf\/.*
@@ -14,20 +14,20 @@
 (function () {
 	"use strict";
 
-	const Voices = 'Halloween Spell: Voices from Below';
-	const DieJob = 'Halloween Spell: Die Job';
-	const Corruption = 'Halloween Spell: Chromatic Corruption';
-	const Pigmentation = 'Halloween Spell: Putrescent Pigmentation';
-	const Spectrum = 'Halloween Spell: Spectral Spectrum';
-	const Sinister = 'Halloween Spell: Sinister Staining';
-	const TeamSpirit = 'Halloween Spell: Team Spirit Footprints';
-	const Headless = 'Halloween Spell: Headless Horseshoes';
-	const CorpseGray = 'Halloween Spell: Corpse Gray Footprints';
-	const Violet = 'Halloween Spell: Violent Violet Footprints';
-	const Purple = 'Halloween Spell: Bruised Purple Footprints';
-	const Gangreen = 'Halloween Spell: Gangreen Footprints';
-	const Orange = 'Halloween Spell: Rotten Orange Footprints';
-	const Exorcism = 'Halloween Spell: Exorcism';
+	const Voices = 'Voices from Below';
+	const DieJob = 'Die Job';
+	const Corruption = 'Chromatic Corruption';
+	const Pigmentation = 'Putrescent Pigmentation';
+	const Spectrum = 'Spectral Spectrum';
+	const Sinister = 'Sinister Staining';
+	const TeamSpirit = 'Team Spirit Footprints';
+	const Headless = 'Headless Horseshoes';
+	const CorpseGray = 'Corpse Gray Footprints';
+	const Violet = 'Violent Violet Footprints';
+	const Purple = 'Bruised Purple Footprints';
+	const Gangreen = 'Gangreen Footprints';
+	const Orange = 'Rotten Orange Footprints';
+	const Exorcism = 'Exorcism';
 
 	function isColor(spell) {
 		return [DieJob, Corruption, Pigmentation, Spectrum, Sinister].includes(spell);
@@ -61,7 +61,6 @@
 			return isExorcism(spell1) ? flip : normal;
 		}
 	}
-	const TRIM = 'Halloween Spell: '.length;
 
 	//###############Source: https://stackoverflow.com/a/15605648
 	String.prototype.fmt = function (hash) {
@@ -204,105 +203,105 @@
 	};
 
 	var spells = { //Footprints
-		"Halloween Spell: Team Spirit Footprints": {
+		"Footprints Spell: Team Spirit Footprints": {
 			"cc": [
 				"#B8383B", "#5885A2"
 			]
 		},
-		"Halloween Spell: Gangreen Footprints": {
+		"Footprints Spell: Gangreen Footprints": {
 			"cc": ["#79c46b"]
 		},
-		"Halloween Spell: Corpse Gray Footprints": {
+		"Footprints Spell: Corpse Gray Footprints": {
 			"cc": ["#8e9f9d"]
 		},
-		"Halloween Spell: Violent Violet Footprints": {
+		"Footprints Spell: Violent Violet Footprints": {
 			"cc": ["#f7b4fe"]
 		},
-		"Halloween Spell: Rotten Orange Footprints": {
+		"Footprints Spell: Rotten Orange Footprints": {
 			"cc": ["#CF7336"]
 		},
-		"Halloween Spell: Bruised Purple Footprints": {
+		"Footprints Spell: Bruised Purple Footprints": {
 			"cc": ["#7D4071"]
 		},
-		"Halloween Spell: Headless Horseshoes": {
+		"Footprints Spell: Headless Horseshoes": {
 			"cc": ["#ba76ff"]
 		}, //Paint changing
-		"Halloween Spell: Die Job": {
+		"Paint Spell: Die Job": {
 			"cc": [
 				"#E7B53B", "#8586ff"
 			]
 		},
-		"Halloween Spell: Spectral Spectrum": {
+		"Paint Spell: Spectral Spectrum": {
 			"cc": [
 				"#B8383B", "#5885A2"
 			]
 		},
-		"Halloween Spell: Putrescent Pigmentation": {
+		"Paint Spell: Putrescent Pigmentation": {
 			"cc": [
 				"#79c46b", "#67B037"
 			]
 		},
-		"Halloween Spell: Sinister Staining": {
+		"Paint Spell: Sinister Staining": {
 			"cc": [
 				"#F2EF46", "#808000"
 			]
 		},
-		"Halloween Spell: Chromatic Corruption": {
+		"Paint Spell: Chromatic Corruption": {
 			"cc": [
 				"#DB42BD", "#7D4071"
 			]
 		}, //Voice Changing
-		"Halloween Spell: Voices from Below": { //this is not the official spell name but it seems the single spell names get merged into it
+		"Standard Spell: Voices from Below": { //this is not the official spell name but it seems the single spell names get merged into it
 			"cc": ["#D11959"]
 		},
-		"Halloween Spell: Scout's Spectral Snarl": {
+		"Standard Spell: Scout's Spectral Snarl": {
 			"cc": ["#acfd9e"]
 		},
-		"Halloween Spell: Soldier's Booming Bark": {
+		"Standard Spell: Soldier's Booming Bark": {
 			"cc": ["#f48280"]
 		},
-		"Halloween Spell: Pyro's Muffled Moan": {
+		"Standard Spell: Pyro's Muffled Moan": {
 			"cc": ["#f8bbfe"]
 		},
-		"Halloween Spell: Demoman's Cadaverous Croak": {
+		"Standard Spell: Demoman's Cadaverous Croak": {
 			"cc": ["#90fdfd"]
 		},
-		"Halloween Spell: Heavy's Bottomless Bass": {
+		"Standard Spell: Heavy's Bottomless Bass": {
 			"cc": ["#f57eff"]
 		},
-		"Halloween Spell: Engineers's Gravelly Growl": {
+		"Standard Spell: Engineers's Gravelly Growl": {
 			"cc": ["#fcfd95"]
 		},
-		"Halloween Spell: Medic's Blood-curdling Bellow": {
+		"Standard Spell: Medic's Blood-curdling Bellow": {
 			"cc": ["#f7b786"]
 		},
-		"Halloween Spell: Sniper's Deep Downunder Drawl": {
+		"Standard Spell: Sniper's Deep Downunder Drawl": {
 			"cc": ["#7c7cff"]
 		},
-		"Halloween Spell: Spy's Creepy Croon": {
+		"Standard Spell: Spy's Creepy Croon": {
 			"cc": ["#e5e5e5"]
 		}, // Weapon changing
-		"Halloween Spell: Pumpkin Bombs": { //this is not the official spell name but it seems the single spell names get merged into it
+		"Weapon Spell: Pumpkin Bombs": { //this is not the official spell name but it seems the single spell names get merged into it
 			"cc": ["#68167d"]
 		},
-		"Halloween Spell: Exorcism": {
+		"Weapon Spell: Exorcism": {
 			"cc": [
 				"#B8383B", "#5885A2"
 			]
 		},
-		"Halloween Spell: Squash Rockets": {
+		"Weapon Spell: Squash Rockets": {
 			"cc": ["#dc93ff"]
 		},
-		"Halloween Spell: Spectral Flame": {
+		"Weapon Spell: Spectral Flame": {
 			"cc": ["#5faf53"]
 		},
-		"Halloween Spell: Sentry Quad-Pumpkins": {
+		"Weapon Spell: Sentry Quad-Pumpkins": {
 			"cc": ["#8b8ce9"]
 		},
-		"Halloween Spell: Gourd Grenades": {
+		"Weapon Spell: Gourd Grenades": {
 			"cc": ["#f8bb8c"]
 		},
-		"Halloween Spell: Halloween Fire": {
+		"Weapon Spell: Halloween Fire": {
 			"cc": ["#4ef442"]
 		}
 	};
@@ -647,7 +646,7 @@ class</a></li>
 				let sk = Object.keys(s);
 				if ((s.hasOwnProperty($(z[p]).attr("data-spell_1"))) && (s.hasOwnProperty($(z[p]).attr("data-spell_2")))) {
 					let [s1, s2] = n($(z[p]).attr("data-spell_1"), $(z[p]).attr("data-spell_2"));
-					let spellName = `${s1} and ${s2.slice(TRIM)}`;
+					let spellName = `${s1} and ${s2.slice(s2.indexOf(":") + 2)}`;
 					if(sk.includes(spellName)) {
 						s[spellName]["items"].push($(z[p])[0]);
 					} else {
