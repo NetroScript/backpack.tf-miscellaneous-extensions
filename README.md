@@ -32,6 +32,12 @@ and then install using this link: [backpack.tf extended sorting.user.js](https:/
 
 _____________________________________________
 
+#### 0.1.23
+
+Fixed:
+
+* Spell sorting
+
 #### 0.1.22
 
 Added:
