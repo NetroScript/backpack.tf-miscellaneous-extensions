@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         backpack.tf - Miscellaneous Extensions
 // @description  Adds more options for sorting items in backpacks (currently Sorting for paints, spells, levels, scm price, classified listings) and other stuff which I would have liked (including highlighting spells, autocompleting spell names, autocompleting particle names or sorting unusuals by class)
-// @version      0.1.23
+// @version      0.1.24
 // @author       Netroscript
 // @namespace    https://github.com/NetroScript
 // @include      /^https?:\/\/backpack\.tf\/.*
@@ -569,6 +569,9 @@ class</a></li>
 			[
 				"Group by classifieds", "classifieds", sortByClassifiedListing
 			],
+			[
+				"Group by craft number", "craftnumber", sortByCraftNumber
+			],
 		];
 
 		function sortByPaint() {
@@ -868,6 +871,48 @@ class</a></li>
 			}
 
 			genericSort(c, "c", true);
+
+		}
+
+		function sortByCraftNumber() {
+			let cn = {};
+			cn["Craft Number"] = {
+				"cc": ["#DD5522"],
+				"items": []
+			};
+
+			cn["No Craft Number"] = {
+				"cc": ["#676780"],
+				"items": []
+			};
+
+			cn["Hidden Items"] = {
+				"cc": ["#676780"]
+			};
+
+			let z = $(".backpack-page .item:not(.spacer)");
+
+			cn["Hidden Items"]["items"] = $(".temp-page .item:not(.spacer)");
+			for (let p = 0; p < z.length; p++) {
+				if ($(z[p])[0].outerText.includes("#")) {
+					cn["Craft Number"]["items"].push($(z[p])[0]);
+				} else {
+					cn["No Craft Number"]["items"].push($(z[p])[0]);
+				}
+
+			}
+
+			for (let k in cn) {
+				if (k == "Craft Number") {
+					cn[k]["items"] = cn[k]["items"].sort((a, b) => {
+						return Number($(a)[0].outerText.split("#")[1]) - Number($(b)[0].outerText.split("#")[1]);
+					});
+				} else {
+					cn[k]["items"] = genericItemSort("data-price", cn[k]["items"]);
+				}
+			}
+
+			genericSort(cn, "craftnumber");
 
 		}
 
