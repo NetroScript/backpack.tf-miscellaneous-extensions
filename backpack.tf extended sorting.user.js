@@ -874,7 +874,20 @@ class</a></li>
 
 		}
 
+		var cnSort = 0;
+
 		function sortByCraftNumber() {
+			const sortCN = (a, b) => {
+				try {
+					return Number($(a)[0].outerText.split("#")[1]) - Number($(b)[0].outerText.split("#")[1]);
+				} catch (e) {
+					return parseInt(a[0].split(" ")[1]) - parseInt(b[0].split(" ")[1]);
+				}
+			}
+			let sorts = [
+				(a, b) => sortCN(a,b),
+				(a, b) => sortCN(b,a)
+			]
 			let cn = {};
 			cn["Craft Number"] = {
 				"cc": ["#DD5522"],
@@ -904,16 +917,20 @@ class</a></li>
 
 			for (let k in cn) {
 				if (k == "Craft Number") {
-					cn[k]["items"] = cn[k]["items"].sort((a, b) => {
-						return Number($(a)[0].outerText.split("#")[1]) - Number($(b)[0].outerText.split("#")[1]);
-					});
+					cn[k]["items"] = cn[k]["items"].sort(sorts[cnSort]);
 				} else {
 					cn[k]["items"] = genericItemSort("data-price", cn[k]["items"]);
 				}
 			}
 
-			genericSort(cn, "craftnumber");
-
+			genericSort(cn, "craftnumber", false, {
+				"use": true,
+				"funct": sorts[cnSort]
+			});
+			cnSort++;
+			if(cnSort > sorts.length -1) {
+				cnSort = 0;
+			}
 		}
 
 		var lasttype = "";
