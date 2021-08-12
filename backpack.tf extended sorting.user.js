@@ -874,25 +874,17 @@ class</a></li>
 
 		}
 
-		var cnSort = 0;
-
 		function sortByCraftNumber() {
-			const sortCN = (a, b) => {
-				try {
-					return Number($(a)[0].outerText.split("#")[1]) - Number($(b)[0].outerText.split("#")[1]);
-				} catch (e) {
-					return parseInt(a[0].split(" ")[1]) - parseInt(b[0].split(" ")[1]);
-				}
-			}
-			let sorts = [
-				(a, b) => sortCN(a,b),
-				(a, b) => sortCN(b,a)
-			]
 			let cn = {};
 			cn["Craft Number"] = {
 				"cc": ["#DD5522"],
 				"items": []
 			};
+
+			cn["Crates"] = {
+				"cc": ["#676780"],
+				"items": []
+			}
 
 			cn["No Craft Number"] = {
 				"cc": ["#676780"],
@@ -908,7 +900,11 @@ class</a></li>
 			cn["Hidden Items"]["items"] = $(".temp-page .item:not(.spacer)");
 			for (let p = 0; p < z.length; p++) {
 				if ($(z[p])[0].outerText.includes("#")) {
-					cn["Craft Number"]["items"].push($(z[p])[0]);
+					if($(z[p]).data("crate") == undefined) {
+						cn["Craft Number"]["items"].push($(z[p])[0]);
+					} else {
+						cn["Crates"]["items"].push($(z[p])[0]);
+					}
 				} else {
 					cn["No Craft Number"]["items"].push($(z[p])[0]);
 				}
@@ -917,20 +913,13 @@ class</a></li>
 
 			for (let k in cn) {
 				if (k == "Craft Number") {
-					cn[k]["items"] = cn[k]["items"].sort(sorts[cnSort]);
+					cn[k]["items"] = cn[k]["items"].sort((a, b) => Number($(a)[0].outerText.split("#")[1]) - Number($(b)[0].outerText.split("#")[1]));
 				} else {
 					cn[k]["items"] = genericItemSort("data-price", cn[k]["items"]);
 				}
 			}
 
-			genericSort(cn, "craftnumber", false, {
-				"use": true,
-				"funct": sorts[cnSort]
-			});
-			cnSort++;
-			if(cnSort > sorts.length -1) {
-				cnSort = 0;
-			}
+			genericSort(cn, "craftnumber", true);
 		}
 
 		var lasttype = "";

@@ -36,7 +36,7 @@ _____________________________________________
 
 Added:
 
-* Craft Number Sort Menu
+* Grouping by craft number
 
 #### 0.1.23
 
