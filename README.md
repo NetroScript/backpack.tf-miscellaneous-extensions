@@ -3,11 +3,12 @@
 This is an userscript to add miscellaneous functionality to backpack.tf (which I would have liked for myself).
 Currently included is:
 
-* In inventories add a Sort by paint
-* In inventories add a Sort by spell
-* In inventories add a Sort by level
-* In inventories add a Sort by scm price
-* In inventories add a Sort by Classifieds (shows you all the listed items)
+* In inventories add a Group by paint
+* In inventories add a Group by spell (including grouping and displaying double spelled items)
+* In inventories add a Group by level
+* In inventories add a Group by scm price
+* In inventories add a Group by Classifieds (shows you all the listed items)
+* In inventories add a Group by Craft numbers (cases and crates have their own category)
 * Allow the reversion of the groups from a sort
 * Filter by class on backpack.tf/effect/<effect>
 * For unusuals you can not only filter for class but now also filter for miscs (manually curated list, if you want more open an issue)
@@ -31,6 +32,13 @@ and then install using this link: [backpack.tf extended sorting.user.js](https:/
 ## Changelog
 
 _____________________________________________
+
+#### 0.1.25
+
+Improved:
+
+* All skin / war paint names for the auto complete which were added to the game since the Winter 2019 Collection (up to Scream Fortress XIII Collection)
+* Tradeoffer links are (when available) now correctly displayed on all user pages (Profile and Friends), instead of only the Backpack page.
 
 #### 0.1.24
 
