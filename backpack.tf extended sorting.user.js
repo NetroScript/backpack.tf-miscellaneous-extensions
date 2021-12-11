@@ -1149,6 +1149,9 @@ class</a></li>
 		if (elQuality) {
 			query += "&elevated=" + elQuality;
 		}
+
+        console.log(query);
+
 		return query;
 	}
 
@@ -1189,7 +1192,7 @@ class</a></li>
 	});
 
 	//Modify Popover
-	$("body").on("mouseover", ".item", function () {
+	$("body").on("mouseover", ".item, .item-icon", function () {
 		let self = this;
 		let id = setInterval(function () {
 
@@ -1207,10 +1210,11 @@ class</a></li>
 						}
                         if($(self).attr("data-paint_kit")){
                             if (popover.find("a[href^='/premium/search']").length !== 1) {
-                                popover.append("<a class=\"btn btn-default btn-xs\" href=\"" + genWeaponSearch($(self)[0], "/premium/search?") + "\"><i class=\"fa fa-star\"></i>Skin Search</a>");
+                                popover.append("<a class=\"btn btn-default btn-xs\" href=\"" + genWeaponSearch($(self)[0], "/premium/search?") + "\"><i class=\"fa fa-star\"></i>Skin Search</a>");    
                             }
-                            
-                            popover.find('.popover-search-links > a:').first().attr('href', genWeaponSearch($(self)[0], "/classifieds?"));
+                            //popover.append("<a class=\"btn btn-default btn-xs\" href=\"" + genWeaponSearch($(self)[0], "/premium/search?") + "\"><i class=\"fa fa-star\"></i>Skin Search</a>");    popover.append("<a class=\"btn btn-default btn-xs\" href=\"" + genWeaponSearch($(self)[0], "/premium/search?") + "\"><i class=\"fa fa-star\"></i>Skin Search</a>");
+                            console.log(popover);
+                            setTimeout(()=>popover.parent().find('#popover-search-links > a').first()[0].href = genWeaponSearch($(self)[0], "/classifieds?"), 100);
                         }
 						
 
