@@ -1149,9 +1149,6 @@ class</a></li>
 		if (elQuality) {
 			query += "&elevated=" + elQuality;
 		}
-
-        console.log(query);
-
 		return query;
 	}
 
