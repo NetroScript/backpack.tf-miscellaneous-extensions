@@ -1131,8 +1131,7 @@ class</a></li>
 		return query;
 	}
 
-	function genWeaponSearch(element) {
-		let query = "/premium/search?";
+	function genWeaponSearch(element, query) {
 		let item = $(element);
 		let name = item.attr("data-base_name");
 		let quality = item.attr("data-quality");
@@ -1206,9 +1205,13 @@ class</a></li>
 						if (popover.find("a[href^='https://marketplace.tf']").length !== 1 && popover.find(".cmpb").length < 1) {
 							popover.append("<a class=\"btn btn-default btn-xs cmpb\" href=\"" + genMP($(self)[0]) + "\" target=\"_blank\"><img src=\"/images/marketplace-small.png?v=2\" style='width: 13px;height: 13px;margin-top: -4px;'> Marketplace</a>");
 						}
-						if (popover.find("a[href^='/premium/search']").length !== 1 && $(self).attr("data-paint_kit")) {
-							popover.append("<a class=\"btn btn-default btn-xs\" href=\"" + genWeaponSearch($(self)[0]) + "\"><i class=\"fa fa-star\"></i>Skin Search</a>");
-						}
+                        if($(self).attr("data-paint_kit")){
+                            if (popover.find("a[href^='/premium/search']").length !== 1) {
+                                popover.append("<a class=\"btn btn-default btn-xs\" href=\"" + genWeaponSearch($(self)[0], "/premium/search?") + "\"><i class=\"fa fa-star\"></i>Skin Search</a>");    
+                            }
+                            setTimeout(()=>popover.parent().find('#popover-search-links > a').first()[0].href = genWeaponSearch($(self)[0], "/classifieds?"), 100);
+                        }
+						
 
 						clearInterval(id2);
 					}
