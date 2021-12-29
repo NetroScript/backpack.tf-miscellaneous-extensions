@@ -1372,27 +1372,18 @@ class</a></li>
         }
 
         getItemSlot(){
-            let itemSlot;
             switch(this.slot){
                 case "primary": case "secondary": case "melee": case "pda":
-                    itemSlot = 1;
-                    break;
+                    return "weapon"
                 case "misc":
-                    itemSlot = 0;
-                    break;
+                    return "misc"
                 case "none":
-                    if(this.name == "Kit"){
-                        itemSlot = -1;
-                    }
-                    else if(this.name == "Fabricator"){
-                        itemSlot = -2;
-                    }
-                    else{
-                        itemSlot = 0;
-                    }
-                    break;
+                    if(this.name == "Kit")
+                        return "kit"
+                    if (this.name == "Fabricator") 
+                        return "fabricator"
+                    return "misc"
             }
-            return itemSlot;
         }
 
         getKillstreakTier(){
