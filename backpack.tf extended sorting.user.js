@@ -1432,26 +1432,15 @@ class</a></li>
      <div class="temp-weaponlist-div" style="margin: 0 0 12px">Loading applicable weapons...</div>
      `);
                 $(".temp-weaponlist-div").load(`https://backpack.tf/overview/${weaponName} .overview-quality-list`,function(){
-                    for(let button of this.firstChild.children){
-                        button.href = appendKSToPath(killstreakTier, button.getAttribute("href"), 0);
-                    }
-                    this.firstChild.classList.remove("overview-quality-list");
-                    this.firstChild.classList.remove("expanded");
-                    $(this.firstChild).append(`<a class="btn btn-variety" id="btn-expand-list">
-                                          <i class="fa fa-ellipsis-h"></i>
-                                          </a>`);
-                    this.outerHTML = this.innerHTML;
-                    $("#page-content").append(`<script>
-    $('#btn-expand-list').click(function () {
-        var $parent = $(this).parent();
+                for(let button of this.firstChild.children){
+                    button.href = appendKSToPath(killstreakTier, button.getAttribute("href"), 0);
+                }
+		$(this.firstChild).removeClass("overview-quality-list expanded")
+			.append(`<a class="btn btn-variety" id="btn-expand-list"><i class="fa fa-ellipsis-h"></i></a>`);
 
-        if ($parent.hasClass('expanded')) {
-            $parent.removeClass('expanded');
-        } else {
-            $parent.addClass('expanded');
-        }
-    });
-</script>`);
+		  $('#btn-expand-list').click(function () {
+			  $(this).parent().toggleClass("expanded");
+		  });
                 });
                 break;
             }
