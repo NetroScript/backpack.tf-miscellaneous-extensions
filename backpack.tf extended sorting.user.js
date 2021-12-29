@@ -1293,9 +1293,9 @@ class</a></li>
         constructor(headerItem){
             this.name = headerItem.dataset.base_name;
             this.defindex = headerItem.dataset.defindex;
-            this.killstreak_tier = headerItem.dataset.ks_tier ? headerItem.dataset.ks_tier : 0;
-            this.aussie = headerItem.dataset.australium ? headerItem.dataset.australium : 0;
-            this.slot = headerItem.dataset.slot ? headerItem.dataset.slot : "none";
+            this.killstreak_tier = headerItem.dataset.ks_tier || 0;
+            this.aussie = headerItem.dataset.australium || 0;
+            this.slot = headerItem.dataset.slot || "none";
             this.idreplacedict = {
                 13 : 200,	// Scattergun
                 294 : 160,	// Lugermorph
