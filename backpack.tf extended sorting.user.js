@@ -1410,7 +1410,7 @@ class</a></li>
             case "kit": {
 
                 let weaponName = encodeURIComponent($(".stats-breadcrumb").last().text().trim())
-                let weaponDefIndex = window.location.pathname.match(/\d+$/g);
+                let weaponDefIndex = $(".stats-header-item .item").attr("data-priceindex").split("-").pop()
 
                 $(".stats-killstreak-list").append(`
           <a class="btn btn-variety q-440-text-4" href="https://backpack.tf/stats/Unique/Killstreak%20Kit/Tradable/Non-Craftable/1-${weaponDefIndex}"> Basic </a>
