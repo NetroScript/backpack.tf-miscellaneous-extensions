@@ -1404,7 +1404,7 @@ class</a></li>
 
         switch(currentItem.getItemSlot()){
 
-            case 0:
+            case "misc":
                 break;
 
             case -1: {
