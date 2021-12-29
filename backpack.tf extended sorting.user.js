@@ -1423,7 +1423,7 @@ class</a></li>
      <a class="btn btn-default" href="https://backpack.tf/stats/Unique/Fabricator/Tradable/Craftable/${6520 + 3 * (killstreakTier - 1)}-6-${weaponDefIndex}" style="margin: 0px 0px 12px;">
      <i class="fa fa-bar-chart"></i>
      Fabricator Stats
-     </div>
+     </a>
      `);
                 }
 
