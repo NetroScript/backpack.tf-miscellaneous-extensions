@@ -1473,7 +1473,7 @@ class</a></li>
                 break;
             }
 
-            case 1: {
+            case "weapon": {
 
                 $(".stats-killstreak-list").append(`
      <a class="btn btn-variety q-440-text-1" href="https://backpack.tf${appendKSToPath(0, currentPath, killstreakTier)}"> No Kit </a>
