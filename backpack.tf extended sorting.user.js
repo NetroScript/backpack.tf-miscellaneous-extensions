@@ -1407,7 +1407,7 @@ class</a></li>
             case "misc":
                 break;
 
-            case -1: {
+            case "kit": {
 
                 let weaponName = trimSpaces(document.querySelector(".stats-breadcrumbs").children[1].innerHTML);
                 let weaponDefIndex = window.location.pathname.match(/\d+$/g);
