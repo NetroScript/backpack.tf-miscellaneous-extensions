@@ -1409,7 +1409,7 @@ class</a></li>
 
             case "kit": {
 
-                let weaponName = trimSpaces(document.querySelector(".stats-breadcrumbs").children[1].innerHTML);
+                let weaponName = encodeURIComponent($(".stats-breadcrumb").last().text().trim())
                 let weaponDefIndex = window.location.pathname.match(/\d+$/g);
 
                 $(".stats-killstreak-list").append(`
