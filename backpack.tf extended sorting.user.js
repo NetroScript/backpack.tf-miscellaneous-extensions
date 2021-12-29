@@ -1360,22 +1360,15 @@ class</a></li>
         }
 
         getItemId(){
-            let itemId;
             let itemName = this.name.match(/((?<=((Blood)|(Gold)|(Silver)|(Rust)|(Carbonado)|(Diamond)) Botkiller ).+(?= Mk.II?))|((?<=Festive ).+)/g); // Regex courtesy of Moder112
             if(itemName){
                 this.defindex = this.nameiddict[itemName[0]];
-                itemId = this.defindex;
+                return this.defindex;
             }
-            else{
-                let defindexInt = parseInt(this.defindex);
-                if(this.idreplacedict.hasOwnProperty(defindexInt)){
-                    itemId = this.idreplacedict[defindexInt].toString();
-                }
-                else{
-                    itemId = this.defindex;
-                }
-            }
-            return itemId;
+            let defindexInt = parseInt(this.defindex);
+            if(this.idreplacedict.hasOwnProperty(defindexInt))
+                return this.idreplacedict[defindexInt].toString();
+            return this.defindex;
         }
 
         getItemSlot(){
