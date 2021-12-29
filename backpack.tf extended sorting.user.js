@@ -1270,10 +1270,6 @@ class</a></li>
 
     // ################# Killstreak Kit Additions for Stats pages ##############
 
-    function trimSpaces(string){
-        return string.replace(/^\s+/g, '').replace(/\s+$/g, '').replace(/\s+/g,"%20");
-    }
-
     function appendKSToPath(tier,path,currentTier){
         const ksTierDict = {
             1 : "Killstreak%20",
@@ -1285,8 +1281,7 @@ class</a></li>
         if(tier > 0){
             splitPath[3] = ksTierDict[tier].concat("",splitPath[3]);
         }
-        let tieredPath = splitPath.join("/");
-        return tieredPath;
+        return splitPath.join("/");
     }
 
     class itemData{
@@ -1388,7 +1383,7 @@ class</a></li>
     };
 
     if (window.location.pathname.startsWith("/stats")) {
-        const currentItem = new itemData(document.querySelector(".item"));
+        const currentItem = new itemStatPageInfo(document.querySelector(".item"));
         let itemId = currentItem.getItemId();
         let killstreakTier = currentItem.getKillstreakTier();
         let currentPath = window.location.pathname;
