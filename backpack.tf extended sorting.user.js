@@ -1352,11 +1352,7 @@ class</a></li>
         }
 
         getItemName(){
-            let itemName = this.name;
-            if(this.aussie == 1){
-                itemName = "Australium".concat(" ", itemName);
-            }
-            return itemName;
+            return (this.aussie == 1) ? "Australium " + this.name : this.name;
         }
 
         getItemId(){
