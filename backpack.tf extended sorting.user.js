@@ -1456,7 +1456,7 @@ class</a></li>
                 break;
             }
 
-            case -2: {
+            case "fabricator": {
                 let weaponDefIndex = window.location.pathname.match(/\d+$/g);
 
                 $(".stats-killstreak-list").append(`
