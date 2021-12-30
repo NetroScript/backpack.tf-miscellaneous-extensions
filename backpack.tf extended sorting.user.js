@@ -1448,7 +1448,7 @@ class</a></li>
      <a class="btn btn-default" href="https://backpack.tf/stats/Unique/Killstreak%20Kit/Tradable/Non-Craftable/${killstreakTier}-${weaponDefIndex}" style="margin: 0px 0px 12px;">
      <i class="fa fa-bar-chart"></i>
      Kit Stats
-     </div>
+     </a>
      `);
                 break;
             }
@@ -1467,7 +1467,7 @@ class</a></li>
      <a class="btn btn-default" href="https://backpack.tf/stats/Unique/Killstreak%20Kit/Tradable/Non-Craftable/${killstreakTier}-${itemId}" style="margin: 0px 0px 12px;">
      <i class="fa fa-bar-chart"></i>
      Kit Stats
-     </div>
+     </a>
      `);
                 }
             }
