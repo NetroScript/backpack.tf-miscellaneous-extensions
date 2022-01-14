@@ -687,12 +687,7 @@ class</a></li>
 			}
 		}
 
-		var kits = { //Footprints
-			"Killstreak": {
-				"cc": [
-					"#B8383B", "#5885A2"
-				]
-			},
+		var sheens = {
 			"Team Shine": {
 				"cc": ["#FF1D15", "#005CFF"]
 			},
@@ -713,7 +708,10 @@ class</a></li>
 			},
 			"Villainous Violet": {
 				"cc": ["#690CFF"]
-			},
+			}
+		};
+
+		var effects = {
 			"Cerebral Discharge": {
 				"cc": [
 					"#B8383B", "#5885A2"
@@ -743,7 +741,7 @@ class</a></li>
 			"Tornado": {
 				"cc": ["#f48280"]
 			}
-		};
+		}
 
 		var ksNormalize = [
 			{
@@ -761,13 +759,15 @@ class</a></li>
 		];
 
 		function sortByKillstreak() {
-			let n = ksNormalize[activeSort]["n"];
 			let id = ksNormalize[activeSort]["id"];
-			let sortedKits = kits;
+			let sortedKits = [effects, sheens][activeSort];
 			sortedKits["No Killstreak"] = {
 				"cc": ["#676780"]
 			};
 			sortedKits["Hidden Items"] = {
+				"cc": ["#676780"]
+			};
+			sortedKits["Killstreak"] = {
 				"cc": ["#676780"]
 			};
 
@@ -781,17 +781,15 @@ class</a></li>
 
 			for (let p = 0; p < z.length; p++) {
 				let sk = Object.keys(sortedKits);
-				if ((sortedKits.hasOwnProperty($(z[p]).attr("data-sheen"))) && (sortedKits.hasOwnProperty($(z[p]).attr("data-killstreaker")))) {
-					let [k1, k2] = n($(z[p]).attr("data-sheen"), $(z[p]).attr("data-killstreaker"));
-					let ksname = `${k1} with ${k2}`;
-					if(sk.includes(ksname)) {
-						sortedKits[ksname]["items"].push($(z[p])[0]);
-					} else {
-						sortedKits[ksname] = {"items": [$(z[p])[0]], "cc": [sortedKits[k1]["cc"][0], sortedKits[k2]["cc"][0]]};
+				if (sortedKits.hasOwnProperty($(z[p]).attr("data-killstreaker"))) {
+					if(sk.includes($(z[p]).attr("data-killstreaker"))) {
+						sortedKits[$(z[p]).attr("data-killstreaker")]["items"].push($(z[p])[0]);
 					}
 				} else if (sortedKits.hasOwnProperty($(z[p]).attr("data-sheen"))) {
-					sortedKits[$(z[p]).attr("data-sheen")]["items"].push($(z[p])[0]);
-				} else if (sortedKits.hasOwnProperty($(z[p]).attr("data-ks_tier"))) {
+					if(sk.includes($(z[p]).attr("data-sheen"))) {
+						sortedKits[$(z[p]).attr("data-sheen")]["items"].push($(z[p])[0]);
+					}
+				} else if ("1" === $(z[p]).attr("data-ks_tier")) {
 					sortedKits["Killstreak"]["items"].push($(z[p])[0]);
 				} else {
 					sortedKits["No Killstreak"]["items"].push($(z[p])[0]);
@@ -805,16 +803,19 @@ class</a></li>
 			delete sortedKits["No Killstreak"];
 			let hi = sortedKits["Hidden Items"];
 			delete sortedKits["Hidden Items"];
+			let nks = sortedKits["Killstreak"];
+			delete sortedKits["Killstreak"];
 			let reducer = function (obj, key) {
 				obj[key] = sortedKits[key];
 				return obj;
 			};
 			const ordered = Object.keys(sortedKits).sort().reduce(reducer, {});
+			ordered["Killstreak"] = nks;
 			ordered["No Killstreak"] = ns;
 			ordered["Hidden Items"] = hi;
 
 			genericSort(ordered, id, true);
-			if (activeSort + 1 >= spellNormalize.length) {
+			if (activeSort + 1 >= ksNormalize.length) {
 				activeSort = 0;
 			} else {
 				activeSort = activeSort + 1;
