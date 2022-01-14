@@ -1,11 +1,17 @@
 # Changelog
 
+## 0.1.27
+
+Fixed:
+
+* Detect "Footsteps Spell" instead of "Footprints Spell"
+
 ## 0.1.26
 
 Added:
 
 * Utilities for Killstreak Kits
-  * Shortcuts to different Killstreak tiers of one weapon, including shortcuts to either the fabricators or kits
+* Shortcuts to different Killstreak tiers of one weapon, including shortcuts to either the fabricators or kits
 
 Fixed:
 

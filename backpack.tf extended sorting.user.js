@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         backpack.tf - Miscellaneous Extensions
 // @description  Adds more options for sorting items in backpacks (currently Sorting for paints, spells, levels, scm price, classified listings) and other stuff which I would have liked (including highlighting spells, autocompleting spell names, autocompleting particle names or sorting unusuals by class)
-// @version      0.1.26
+// @version      0.1.27
 // @author       Netroscript
 // @namespace    https://github.com/NetroScript
 // @include      /^https?:\/\/backpack\.tf\/.*
@@ -203,27 +203,27 @@
 	};
 
 	var spells = { //Footprints
-		"Footprints Spell: Team Spirit Footprints": {
+		"Footsteps Spell: Team Spirit Footprints": {
 			"cc": [
 				"#B8383B", "#5885A2"
 			]
 		},
-		"Footprints Spell: Gangreen Footprints": {
+		"Footsteps Spell: Gangreen Footprints": {
 			"cc": ["#79c46b"]
 		},
-		"Footprints Spell: Corpse Gray Footprints": {
+		"Footsteps Spell: Corpse Gray Footprints": {
 			"cc": ["#8e9f9d"]
 		},
-		"Footprints Spell: Violent Violet Footprints": {
+		"Footsteps Spell: Violent Violet Footprints": {
 			"cc": ["#f7b4fe"]
 		},
-		"Footprints Spell: Rotten Orange Footprints": {
+		"Footsteps Spell: Rotten Orange Footprints": {
 			"cc": ["#CF7336"]
 		},
-		"Footprints Spell: Bruised Purple Footprints": {
+		"Footsteps Spell: Bruised Purple Footprints": {
 			"cc": ["#7D4071"]
 		},
-		"Footprints Spell: Headless Horseshoes": {
+		"Footsteps Spell: Headless Horseshoes": {
 			"cc": ["#ba76ff"]
 		}, //Paint changing
 		"Paint Spell: Die Job": {
@@ -1207,11 +1207,11 @@ class</a></li>
 						}
 						if($(self).attr("data-paint_kit")){
 							if (popover.find("a[href^='/premium/search']").length !== 1) {
-								popover.append("<a class=\"btn btn-default btn-xs\" href=\"" + genWeaponSearch($(self)[0], "/premium/search?") + "\"><i class=\"fa fa-star\"></i>Skin Search</a>");    
+								popover.append("<a class=\"btn btn-default btn-xs\" href=\"" + genWeaponSearch($(self)[0], "/premium/search?") + "\"><i class=\"fa fa-star\"></i>Skin Search</a>");
 							}
 							setTimeout(()=>popover.parent().find("#popover-search-links > a").first()[0].href = genWeaponSearch($(self)[0], "/classifieds?"), 100);
 						}
-						
+
 
 						clearInterval(id2);
 					}
@@ -1372,7 +1372,7 @@ class</a></li>
 			case "none":
 				if(this.name == "Kit")
 					return "kit";
-				if (this.name == "Fabricator") 
+				if (this.name == "Fabricator")
 					return "fabricator";
 				return "misc";
 			}
