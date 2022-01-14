@@ -2,6 +2,10 @@
 
 ## 0.1.27
 
+Added:
+
+* Grouping by killstreak
+
 Fixed:
 
 * Detect "Footsteps Spell" instead of "Footprints Spell"

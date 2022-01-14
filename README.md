@@ -21,6 +21,7 @@ Currently included is:
 * If possible a trade offer link will be added to the profile links, so you can offer a trade even when the user has no listed item
 * Utilities for Killstreak Kits
   * Shortcuts to different Killstreak tiers of one weapon, including shortcuts to either the fabricators or kits
+  * Group by Killstreak Kits in inventories
 
 ## Installation
 

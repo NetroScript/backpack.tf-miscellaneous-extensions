@@ -571,6 +571,9 @@ class</a></li>
 			[
 				"Group by craft number", "craftnumber", sortByCraftNumber
 			],
+			[
+				"Group by killstreak", "killstreak", sortByKillstreak
+			],
 		];
 
 		function sortByPaint() {
@@ -674,6 +677,140 @@ class</a></li>
 			};
 			const ordered = Object.keys(s).sort().reduce(reducer, {});
 			ordered["No Spell"] = ns;
+			ordered["Hidden Items"] = hi;
+
+			genericSort(ordered, id, true);
+			if (activeSort + 1 >= spellNormalize.length) {
+				activeSort = 0;
+			} else {
+				activeSort = activeSort + 1;
+			}
+		}
+
+		var kits = { //Footprints
+			"Killstreak": {
+				"cc": [
+					"#B8383B", "#5885A2"
+				]
+			},
+			"Team Shine": {
+				"cc": ["#FF1D15", "#005CFF"]
+			},
+			"Hot Rod": {
+				"cc": ["#FF79FF"]
+			},
+			"Manndarin": {
+				"cc": ["#FF6F01"]
+			},
+			"Deadly Daffodil": {
+				"cc": ["#FFD63F"]
+			},
+			"Agonizing Emerald": {
+				"cc": ["#67FF7A"]
+			},
+			"Mean Green": {
+				"cc": ["#C2FF3B"]
+			},
+			"Villainous Violet": {
+				"cc": ["#690CFF"]
+			},
+			"Cerebral Discharge": {
+				"cc": [
+					"#B8383B", "#5885A2"
+				]
+			},
+			"Fire Horns": {
+				"cc": [
+					"#79c46b", "#67B037"
+				]
+			},
+			"Flames": {
+				"cc": [
+					"#F2EF46", "#808000"
+				]
+			},
+			"Hypno-Beam": {
+				"cc": [
+					"#DB42BD", "#7D4071"
+				]
+			},
+			"Incinerator": {
+				"cc": ["#D11959"]
+			},
+			"Singularity": {
+				"cc": ["#acfd9e"]
+			},
+			"Tornado": {
+				"cc": ["#f48280"]
+			}
+		};
+
+		var ksNormalize = [
+			{
+				"n": function (a, b) {
+					return [a, b];
+				},
+				"id": "ks"
+			},
+			{
+				"n": function (a, b) {
+					return [b, a];
+				},
+				"id": "ks2"
+			}
+		];
+
+		function sortByKillstreak() {
+			let n = ksNormalize[activeSort]["n"];
+			let id = ksNormalize[activeSort]["id"];
+			let sortedKits = kits;
+			sortedKits["No Killstreak"] = {
+				"cc": ["#676780"]
+			};
+			sortedKits["Hidden Items"] = {
+				"cc": ["#676780"]
+			};
+
+			for (let key in sortedKits) {
+				sortedKits[key]["items"] = [];
+			}
+
+			let z = $(".backpack-page .item:not(.spacer)");
+
+			sortedKits["Hidden Items"]["items"] = $(".temp-page .item:not(.spacer)");
+
+			for (let p = 0; p < z.length; p++) {
+				let sk = Object.keys(sortedKits);
+				if ((sortedKits.hasOwnProperty($(z[p]).attr("data-sheen"))) && (sortedKits.hasOwnProperty($(z[p]).attr("data-killstreaker")))) {
+					let [k1, k2] = n($(z[p]).attr("data-sheen"), $(z[p]).attr("data-killstreaker"));
+					let ksname = `${k1} with ${k2}`;
+					if(sk.includes(ksname)) {
+						sortedKits[ksname]["items"].push($(z[p])[0]);
+					} else {
+						sortedKits[ksname] = {"items": [$(z[p])[0]], "cc": [sortedKits[k1]["cc"][0], sortedKits[k2]["cc"][0]]};
+					}
+				} else if (sortedKits.hasOwnProperty($(z[p]).attr("data-sheen"))) {
+					sortedKits[$(z[p]).attr("data-sheen")]["items"].push($(z[p])[0]);
+				} else if (sortedKits.hasOwnProperty($(z[p]).attr("data-ks_tier"))) {
+					sortedKits["Killstreak"]["items"].push($(z[p])[0]);
+				} else {
+					sortedKits["No Killstreak"]["items"].push($(z[p])[0]);
+				}
+			}
+
+			for (let key in sortedKits) {
+				sortedKits[key]["items"] = genericItemSort("data-price", sortedKits[key]["items"]);
+			}
+			let ns = sortedKits["No Killstreak"];
+			delete sortedKits["No Killstreak"];
+			let hi = sortedKits["Hidden Items"];
+			delete sortedKits["Hidden Items"];
+			let reducer = function (obj, key) {
+				obj[key] = sortedKits[key];
+				return obj;
+			};
+			const ordered = Object.keys(sortedKits).sort().reduce(reducer, {});
+			ordered["No Killstreak"] = ns;
 			ordered["Hidden Items"] = hi;
 
 			genericSort(ordered, id, true);
