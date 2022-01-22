@@ -5,6 +5,7 @@
 Added:
 
 * Grouping by killstreak
+* Grouping by original id
 
 Fixed:
 

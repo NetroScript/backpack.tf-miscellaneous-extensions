@@ -574,7 +574,69 @@ class</a></li>
 			[
 				"Group by killstreak", "killstreak", sortByKillstreak
 			],
+			[
+				"Group by original id", "original", sortByOriginalId
+			],
 		];
+
+		function sortByOriginalId() {
+			let d = {};
+			d["No Original Id Detected"] = {
+				"cc": ["#676780"],
+				"items": []
+			};
+			d["Items"] = {
+				"cc": ["#676780"],
+				"items": []
+			};
+			d["Hidden Items"] = {
+				"cc": ["#676780"]
+			};
+
+			let z = $(".backpack-page .item:not(.spacer)");
+
+
+			//If you want all defindexes not on a single page and as a group for each original id change the singlepage value
+			let singlepage = true;
+
+			d["Hidden Items"]["items"] = $(".temp-page .item:not(.spacer)");
+
+			for (let p = 0; p < z.length; p++) {
+				if ($(z[p]).attr("data-original_id") !== undefined &&
+					$(z[p]).attr("data-original_id") !== "0") {
+					let def = $(z[p]).attr("data-original_id");
+					if (!singlepage) {
+						if (!d.hasOwnProperty(def)) {
+							d[def] = {
+								"cc": ["#676780"],
+								"items": []
+							};
+						}
+						d[def]["items"].push($(z[p])[0]);
+					} else {
+						d["Items"]["items"].push($(z[p])[0]);
+					}
+				} else {
+					d["No Original Id Detected"]["items"].push($(z[p])[0]);
+				}
+			}
+
+			if (!singlepage)
+				for (let k in d) {
+					d[k]["items"] = genericItemSort("data-original_id", d[k]["items"]);
+				}
+			else
+				for (let k in d) {
+					d[k]["items"] = genericItemSort("data-original_id", d[k]["items"]);
+				}
+
+			genericSort(d, "d", true, {
+				"use": true,
+				"funct": function (a, b) {
+					return parseInt(a[0].split(" ")[1]) - parseInt(b[0].split(" ")[1]);
+				}
+			});
+		}
 
 		function sortByPaint() {
 			let paints = colors;
