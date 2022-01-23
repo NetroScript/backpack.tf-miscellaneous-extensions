@@ -4,7 +4,7 @@
 // @version      0.1.27
 // @author       Netroscript
 // @namespace    https://github.com/NetroScript
-// @include      /^https?:\/\/backpack\.tf\/.*
+// @include      /^https?:\/\/(.*\.)?backpack\.tf\/.*
 // @downloadURL  https://github.com/NetroScript/backpack.tf-miscellaneous-extensions/raw/master/backpack.tf%20extended%20sorting.user.js
 // @updateURL    https://github.com/NetroScript/backpack.tf-miscellaneous-extensions/raw/master/backpack.tf%20extended%20sorting.meta.js
 // @grant        none
