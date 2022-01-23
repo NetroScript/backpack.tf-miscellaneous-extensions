@@ -775,33 +775,25 @@ class</a></li>
 
 		var effects = {
 			"Cerebral Discharge": {
-				"cc": [
-					"#B8383B", "#5885A2"
-				]
+				"cc": ["#633310"]
 			},
 			"Fire Horns": {
-				"cc": [
-					"#79c46b", "#67B037"
-				]
+				"cc": ["#633310"]
 			},
 			"Flames": {
-				"cc": [
-					"#F2EF46", "#808000"
-				]
+				"cc": ["#633310"]
 			},
 			"Hypno-Beam": {
-				"cc": [
-					"#DB42BD", "#7D4071"
-				]
+				"cc": ["#633310"]
 			},
 			"Incinerator": {
-				"cc": ["#D11959"]
+				"cc": ["#633310"]
 			},
 			"Singularity": {
-				"cc": ["#acfd9e"]
+				"cc": ["#633310"]
 			},
 			"Tornado": {
-				"cc": ["#f48280"]
+				"cc": ["#633310"]
 			}
 		}
 
