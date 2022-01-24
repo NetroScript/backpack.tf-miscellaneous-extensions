@@ -9,6 +9,7 @@ Currently included is:
 * In inventories add a Group by scm price
 * In inventories add a Group by Classifieds (shows you all the listed items)
 * In inventories add a Group by Craft numbers (cases and crates have their own category)
+* In inventories add a Group by Killstreak Kits (group by effect, click again to group by sheen)
 * Allow the reversion of the groups from a sort
 * Filter by class on backpack.tf/effect/<effect>
 * For unusuals you can not only filter for class but now also filter for miscs (manually curated list, if you want more open an issue)

@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         backpack.tf - Miscellaneous Extensions
 // @description  Adds more options for sorting items in backpacks (currently Sorting for paints, spells, levels, scm price, classified listings) and other stuff which I would have liked (including highlighting spells, autocompleting spell names, autocompleting particle names or sorting unusuals by class)
-// @version      0.1.26
+// @version      0.1.27
 // @author       Netroscript
 // @namespace    https://github.com/NetroScript
-// @include      /^https?:\/\/backpack\.tf\/.*
+// @include      /^https?:\/\/(.*\.)?backpack\.tf\/.*
 // @downloadURL  https://github.com/NetroScript/backpack.tf-miscellaneous-extensions/raw/master/backpack.tf%20extended%20sorting.user.js
 // @updateURL    https://github.com/NetroScript/backpack.tf-miscellaneous-extensions/raw/master/backpack.tf%20extended%20sorting.meta.js
 // @grant        none
@@ -203,27 +203,27 @@
 	};
 
 	var spells = { //Footprints
-		"Footprints Spell: Team Spirit Footprints": {
+		"Footsteps Spell: Team Spirit Footprints": {
 			"cc": [
 				"#B8383B", "#5885A2"
 			]
 		},
-		"Footprints Spell: Gangreen Footprints": {
+		"Footsteps Spell: Gangreen Footprints": {
 			"cc": ["#79c46b"]
 		},
-		"Footprints Spell: Corpse Gray Footprints": {
+		"Footsteps Spell: Corpse Gray Footprints": {
 			"cc": ["#8e9f9d"]
 		},
-		"Footprints Spell: Violent Violet Footprints": {
+		"Footsteps Spell: Violent Violet Footprints": {
 			"cc": ["#f7b4fe"]
 		},
-		"Footprints Spell: Rotten Orange Footprints": {
+		"Footsteps Spell: Rotten Orange Footprints": {
 			"cc": ["#CF7336"]
 		},
-		"Footprints Spell: Bruised Purple Footprints": {
+		"Footsteps Spell: Bruised Purple Footprints": {
 			"cc": ["#7D4071"]
 		},
-		"Footprints Spell: Headless Horseshoes": {
+		"Footsteps Spell: Headless Horseshoes": {
 			"cc": ["#ba76ff"]
 		}, //Paint changing
 		"Paint Spell: Die Job": {
@@ -571,7 +571,72 @@ class</a></li>
 			[
 				"Group by craft number", "craftnumber", sortByCraftNumber
 			],
+			[
+				"Group by killstreak", "killstreak", sortByKillstreak
+			],
+			[
+				"Group by original id", "original", sortByOriginalId
+			],
 		];
+
+		function sortByOriginalId() {
+			let d = {};
+			d["No Original Id Detected"] = {
+				"cc": ["#676780"],
+				"items": []
+			};
+			d["Items"] = {
+				"cc": ["#676780"],
+				"items": []
+			};
+			d["Hidden Items"] = {
+				"cc": ["#676780"]
+			};
+
+			let z = $(".backpack-page .item:not(.spacer)");
+
+
+			//If you want all defindexes not on a single page and as a group for each original id change the singlepage value
+			let singlepage = true;
+
+			d["Hidden Items"]["items"] = $(".temp-page .item:not(.spacer)");
+
+			for (let p = 0; p < z.length; p++) {
+				if ($(z[p]).attr("data-original_id") !== undefined &&
+					$(z[p]).attr("data-original_id") !== "0") {
+					let def = $(z[p]).attr("data-original_id");
+					if (!singlepage) {
+						if (!d.hasOwnProperty(def)) {
+							d[def] = {
+								"cc": ["#676780"],
+								"items": []
+							};
+						}
+						d[def]["items"].push($(z[p])[0]);
+					} else {
+						d["Items"]["items"].push($(z[p])[0]);
+					}
+				} else {
+					d["No Original Id Detected"]["items"].push($(z[p])[0]);
+				}
+			}
+
+			if (!singlepage)
+				for (let k in d) {
+					d[k]["items"] = genericItemSort("data-original_id", d[k]["items"]);
+				}
+			else
+				for (let k in d) {
+					d[k]["items"] = genericItemSort("data-original_id", d[k]["items"]);
+				}
+
+			genericSort(d, "d", true, {
+				"use": true,
+				"funct": function (a, b) {
+					return parseInt(a[0].split(" ")[1]) - parseInt(b[0].split(" ")[1]);
+				}
+			});
+		}
 
 		function sortByPaint() {
 			let paints = colors;
@@ -678,6 +743,133 @@ class</a></li>
 
 			genericSort(ordered, id, true);
 			if (activeSort + 1 >= spellNormalize.length) {
+				activeSort = 0;
+			} else {
+				activeSort = activeSort + 1;
+			}
+		}
+
+		var sheens = {
+			"Team Shine": {
+				"cc": ["#FF1D15", "#005CFF"]
+			},
+			"Hot Rod": {
+				"cc": ["#FF79FF"]
+			},
+			"Manndarin": {
+				"cc": ["#FF6F01"]
+			},
+			"Deadly Daffodil": {
+				"cc": ["#FFD63F"]
+			},
+			"Agonizing Emerald": {
+				"cc": ["#67FF7A"]
+			},
+			"Mean Green": {
+				"cc": ["#C2FF3B"]
+			},
+			"Villainous Violet": {
+				"cc": ["#690CFF"]
+			}
+		};
+
+		var effects = {
+			"Cerebral Discharge": {
+				"cc": ["#633310"]
+			},
+			"Fire Horns": {
+				"cc": ["#633310"]
+			},
+			"Flames": {
+				"cc": ["#633310"]
+			},
+			"Hypno-Beam": {
+				"cc": ["#633310"]
+			},
+			"Incinerator": {
+				"cc": ["#633310"]
+			},
+			"Singularity": {
+				"cc": ["#633310"]
+			},
+			"Tornado": {
+				"cc": ["#633310"]
+			}
+		}
+
+		var ksNormalize = [
+			{
+				"n": function (a, b) {
+					return [a, b];
+				},
+				"id": "ks"
+			},
+			{
+				"n": function (a, b) {
+					return [b, a];
+				},
+				"id": "ks2"
+			}
+		];
+
+		function sortByKillstreak() {
+			let id = ksNormalize[activeSort]["id"];
+			let sortedKits = [effects, sheens][activeSort];
+			sortedKits["No Killstreak"] = {
+				"cc": ["#676780"]
+			};
+			sortedKits["Hidden Items"] = {
+				"cc": ["#676780"]
+			};
+			sortedKits["Killstreak"] = {
+				"cc": ["#676780"]
+			};
+
+			for (let key in sortedKits) {
+				sortedKits[key]["items"] = [];
+			}
+
+			let z = $(".backpack-page .item:not(.spacer)");
+
+			sortedKits["Hidden Items"]["items"] = $(".temp-page .item:not(.spacer)");
+
+			for (let p = 0; p < z.length; p++) {
+				let sk = Object.keys(sortedKits);
+				if (sortedKits.hasOwnProperty($(z[p]).attr("data-killstreaker"))) {
+					if(sk.includes($(z[p]).attr("data-killstreaker"))) {
+						sortedKits[$(z[p]).attr("data-killstreaker")]["items"].push($(z[p])[0]);
+					}
+				} else if (sortedKits.hasOwnProperty($(z[p]).attr("data-sheen"))) {
+					if(sk.includes($(z[p]).attr("data-sheen"))) {
+						sortedKits[$(z[p]).attr("data-sheen")]["items"].push($(z[p])[0]);
+					}
+				} else if ("1" === $(z[p]).attr("data-ks_tier")) {
+					sortedKits["Killstreak"]["items"].push($(z[p])[0]);
+				} else {
+					sortedKits["No Killstreak"]["items"].push($(z[p])[0]);
+				}
+			}
+
+			for (let key in sortedKits) {
+				sortedKits[key]["items"] = genericItemSort("data-price", sortedKits[key]["items"]);
+			}
+			let ns = sortedKits["No Killstreak"];
+			delete sortedKits["No Killstreak"];
+			let hi = sortedKits["Hidden Items"];
+			delete sortedKits["Hidden Items"];
+			let nks = sortedKits["Killstreak"];
+			delete sortedKits["Killstreak"];
+			let reducer = function (obj, key) {
+				obj[key] = sortedKits[key];
+				return obj;
+			};
+			const ordered = Object.keys(sortedKits).sort().reduce(reducer, {});
+			ordered["Killstreak"] = nks;
+			ordered["No Killstreak"] = ns;
+			ordered["Hidden Items"] = hi;
+
+			genericSort(ordered, id, true);
+			if (activeSort + 1 >= ksNormalize.length) {
 				activeSort = 0;
 			} else {
 				activeSort = activeSort + 1;
@@ -1207,11 +1399,11 @@ class</a></li>
 						}
 						if($(self).attr("data-paint_kit")){
 							if (popover.find("a[href^='/premium/search']").length !== 1) {
-								popover.append("<a class=\"btn btn-default btn-xs\" href=\"" + genWeaponSearch($(self)[0], "/premium/search?") + "\"><i class=\"fa fa-star\"></i>Skin Search</a>");    
+								popover.append("<a class=\"btn btn-default btn-xs\" href=\"" + genWeaponSearch($(self)[0], "/premium/search?") + "\"><i class=\"fa fa-star\"></i>Skin Search</a>");
 							}
 							setTimeout(()=>popover.parent().find("#popover-search-links > a").first()[0].href = genWeaponSearch($(self)[0], "/classifieds?"), 100);
 						}
-						
+
 
 						clearInterval(id2);
 					}
@@ -1372,7 +1564,7 @@ class</a></li>
 			case "none":
 				if(this.name == "Kit")
 					return "kit";
-				if (this.name == "Fabricator") 
+				if (this.name == "Fabricator")
 					return "fabricator";
 				return "misc";
 			}
