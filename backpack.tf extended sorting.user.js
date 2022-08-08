@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         backpack.tf - Miscellaneous Extensions
 // @description  Adds more options for sorting items in backpacks (currently Sorting for paints, spells, levels, scm price, classified listings) and other stuff which I would have liked (including highlighting spells, autocompleting spell names, autocompleting particle names or sorting unusuals by class)
-// @version      0.1.27
+// @version      0.1.28
 // @author       Netroscript
 // @namespace    https://github.com/NetroScript
 // @include      /^https?:\/\/(.*\.)?backpack\.tf\/.*
@@ -1484,6 +1484,9 @@ class</a></li>
 			this.aussie = headerItem.dataset.australium || 0;
 			this.slot = headerItem.dataset.slot || "none";
 			this.idreplacedict = {
+				10 : 199,	// Shotgun
+				18 : 205,	// Rocket Launcher
+				23 : 209,	// Pistol
 				13 : 200,	// Scattergun
 				294 : 160,	// Lugermorph
 				833 : 812,	// Flying Guillotine
@@ -1508,6 +1511,9 @@ class</a></li>
 			};
 
 			this.nameiddict = {
+				"Shotgun" : 199,
+				"Rocket Launcher" : 205,
+				"Pistol": 209,
 				"Scattergun" : 200,
 				"Force-A-Nature" : 45,
 				"Holy Mackerel" : 221,
