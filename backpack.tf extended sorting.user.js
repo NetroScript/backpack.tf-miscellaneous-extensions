@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         backpack.tf - Miscellaneous Extensions
 // @description  Adds more options for sorting items in backpacks (currently Sorting for paints, spells, levels, scm price, classified listings) and other stuff which I would have liked (including highlighting spells, autocompleting spell names, autocompleting particle names or sorting unusuals by class)
-// @version      0.1.28
+// @version      0.1.29
 // @author       Netroscript
 // @namespace    https://github.com/NetroScript
 // @include      /^https?:\/\/(.*\.)?backpack\.tf\/.*
@@ -1586,6 +1586,8 @@ class</a></li>
 		let itemId = currentItem.getItemId();
 		let killstreakTier = currentItem.getKillstreakTier();
 		let currentPath = window.location.pathname;
+
+		markSpells();
 
 		$(".stats-header-controls").append(`
      <br>
